@@ -7,7 +7,7 @@ const browserSyncPlugin = require('./site/plugins/browser-sync');
 
 // Site configuration.
 const notFoundPage = 'docs/404.html';
-const passthrough = { 'site/assets': 'assets/css'};
+const passthrough = { 'site/assets': 'assets/css' };
 
 // This is the object that will be returned by the exported function.
 const eleventyOptions = {
@@ -40,7 +40,6 @@ const eleventyOptions = {
 };
 
 module.exports = function (eleventyConfig) {
-
   eleventyConfig.setDataDeepMerge(true);
 
   // Plugins.

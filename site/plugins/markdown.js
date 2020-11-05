@@ -4,7 +4,7 @@ const markdownIt = require('markdown-it');
 const markdownItAnchor = require('markdown-it-anchor');
 
 module.exports = (eleventyConfig) => {
-/* Markdown Overrides */
+  /* Markdown Overrides */
   let markdownLibrary = markdownIt({
     html: true,
     breaks: true,
@@ -15,4 +15,4 @@ module.exports = (eleventyConfig) => {
     permalinkSymbol: '#',
   });
   eleventyConfig.setLibrary('md', markdownLibrary);
-}
+};

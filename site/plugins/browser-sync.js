@@ -19,4 +19,4 @@ module.exports = (eleventyConfig, { notFoundPage }) => {
     ui: false,
     ghostMode: false,
   });
-}
+};
