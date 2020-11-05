@@ -2,62 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://example.com/posts/firstpost/</loc>
-    <lastmod>2018-05-01</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://example.com/posts/secondpost/</loc>
-    <lastmod>2018-07-04</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://example.com/posts/thirdpost/</loc>
-    <lastmod>2018-08-24</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://example.com/posts/fourthpost/</loc>
-    <lastmod>2018-09-30</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://example.com/about/</loc>
+    <loc>https://pb-uk.github.io/posts/firstpost/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
-    <loc>https://example.com/posts/</loc>
+    <loc>https://pb-uk.github.io/about/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
-    <loc>https://example.com/</loc>
+    <loc>https://pb-uk.github.io/posts/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
-    <loc>https://example.com/page-list/</loc>
+    <loc>https://pb-uk.github.io/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
-    <loc>https://example.com/tags/</loc>
+    <loc>https://pb-uk.github.io/page-list/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
-    <loc>https://example.com/tags/another-tag/</loc>
+    <loc>https://pb-uk.github.io/tags/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
-    <loc>https://example.com/tags/second-tag/</loc>
-    <lastmod>2020-11-05</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://example.com/tags/number-2/</loc>
+    <loc>https://pb-uk.github.io/tags/meta/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
 </urlset>

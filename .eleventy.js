@@ -7,7 +7,7 @@ const browserSyncPlugin = require('./site/plugins/browser-sync');
 
 // Site configuration.
 const notFoundPage = 'docs/404.html';
-const passthrough = { 'site/assets': 'assets/css' };
+const passthrough = { 'site/assets': 'assets' };
 
 // This is the object that will be returned by the exported function.
 const eleventyOptions = {
