@@ -1,3 +1,5 @@
+// .eleventy.js
+
 const { DateTime } = require('luxon');
 const fs = require('fs');
 const pluginRss = require('@11ty/eleventy-plugin-rss');
@@ -6,6 +8,40 @@ const pluginNavigation = require('@11ty/eleventy-navigation');
 const markdownIt = require('markdown-it');
 const markdownItAnchor = require('markdown-it-anchor');
 
+
+const notFoundPage = 'docs/404.html';
+const passthrough = { 'site/assets': 'assets/css'};
+
+// This is the object that will be returned by the exported function.
+const eleventyOptions = {
+  templateFormats: ['md', 'njk', 'html', 'liquid'],
+
+  // If your site lives in a different subdirectory, change this.
+  // Leading or trailing slashes are all normalized away, so don’t worry about those.
+
+  // If you don’t have a subdirectory, use "" or "/" (they do the same thing)
+  // This is only used for link URLs (it does not affect your file structure)
+  // Best paired with the `url` filter: https://www.11ty.dev/docs/filters/url/
+
+  // You can also pass this in on the command line using `--pathprefix`
+  // pathPrefix: "/",
+
+  markdownTemplateEngine: 'liquid',
+  htmlTemplateEngine: 'njk',
+  dataTemplateEngine: 'njk',
+
+  // Override default directories.
+  dir: {
+    output: 'docs', //_site
+    input: 'site/content',
+    // Relative to `input`.
+    includes: '../includes', // _includes
+    layouts: '../layouts',
+    partials: '../partials',
+    data: '../data', //_data
+  },
+};
+
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(pluginRss);
   eleventyConfig.addPlugin(pluginSyntaxHighlight);
@@ -13,7 +49,7 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.setDataDeepMerge(true);
 
-  eleventyConfig.addLayoutAlias('post', 'layouts/post.njk');
+  eleventyConfig.addLayoutAlias('post', 'post.njk');
 
   eleventyConfig.addFilter('readableDate', (dateObj) => {
     return DateTime.fromJSDate(dateObj, { zone: 'utc' }).toFormat(
@@ -28,6 +64,7 @@ module.exports = function (eleventyConfig) {
 
   // Get the first `n` elements of a collection.
   eleventyConfig.addFilter('head', (array, n) => {
+    if (!array) return [];
     if (n < 0) {
       return array.slice(n);
     }
@@ -68,8 +105,7 @@ module.exports = function (eleventyConfig) {
     return [...tagSet];
   });
 
-  eleventyConfig.addPassthroughCopy('img');
-  eleventyConfig.addPassthroughCopy('css');
+  eleventyConfig.addPassthroughCopy(passthrough);
 
   /* Markdown Overrides */
   let markdownLibrary = markdownIt({
@@ -87,7 +123,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.setBrowserSyncConfig({
     callbacks: {
       ready: function (err, browserSync) {
-        const content_404 = fs.readFileSync('_site/404.html');
+        const content_404 = fs.readFileSync(notFoundPage);
 
         browserSync.addMiddleware('*', (req, res) => {
           // Provides the 404 content without redirect.
@@ -100,29 +136,5 @@ module.exports = function (eleventyConfig) {
     ghostMode: false,
   });
 
-  return {
-    templateFormats: ['md', 'njk', 'html', 'liquid'],
-
-    // If your site lives in a different subdirectory, change this.
-    // Leading or trailing slashes are all normalized away, so don’t worry about those.
-
-    // If you don’t have a subdirectory, use "" or "/" (they do the same thing)
-    // This is only used for link URLs (it does not affect your file structure)
-    // Best paired with the `url` filter: https://www.11ty.dev/docs/filters/url/
-
-    // You can also pass this in on the command line using `--pathprefix`
-    // pathPrefix: "/",
-
-    markdownTemplateEngine: 'liquid',
-    htmlTemplateEngine: 'njk',
-    dataTemplateEngine: 'njk',
-
-    // These are all optional, defaults are shown:
-    dir: {
-      input: '.',
-      includes: '_includes',
-      data: '_data',
-      output: '_site',
-    },
-  };
+  return eleventyOptions;
 };
