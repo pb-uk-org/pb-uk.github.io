@@ -1,35 +1,25 @@
 {
-  "name": "eleventy-base-blog",
-  "version": "5.0.2",
+  "name": "eleventy-base-blog-refactored",
+  "version": "0.1.0-dev",
   "description": "A starter repository for a blog web site using the Eleventy static site generator.",
   "scripts": {
     "build": "eleventy",
-    "watch": "eleventy --watch",
+    "lint": "eslint . && prettier . --check",
+    "lint:fix": "eslint . --fix && prettier . --write",
+    "debug": "DEBUG=* eleventy",
     "serve": "eleventy --serve",
     "start": "eleventy --serve",
-    "debug": "DEBUG=* eleventy"
+    "watch": "eleventy --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/11ty/eleventy-base-blog.git"
-  },
-  "author": {
-    "name": "Zach Leatherman",
-    "email": "zachleatherman@gmail.com",
-    "url": "https://zachleat.com/"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/11ty/eleventy-base-blog/issues"
-  },
-  "homepage": "https://github.com/11ty/eleventy-base-blog#readme",
   "devDependencies": {
     "@11ty/eleventy": "^0.11.1",
     "@11ty/eleventy-navigation": "^0.1.6",
     "@11ty/eleventy-plugin-rss": "^1.0.9",
     "@11ty/eleventy-plugin-syntaxhighlight": "^3.0.4",
+    "eslint": "^7.12.1",
     "luxon": "^1.25.0",
     "markdown-it": "^12.0.2",
-    "markdown-it-anchor": "^6.0.0"
+    "markdown-it-anchor": "^6.0.0",
+    "prettier": "^2.1.2"
   }
 }
