@@ -1,14 +1,11 @@
 // .eleventy.js
 
-const { DateTime } = require('luxon');
-const fs = require('fs');
-const pluginRss = require('@11ty/eleventy-plugin-rss');
-const pluginSyntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
-const pluginNavigation = require('@11ty/eleventy-navigation');
-const markdownIt = require('markdown-it');
-const markdownItAnchor = require('markdown-it-anchor');
+// Require plugins.
+const baseBlogPlugin = require('./site/plugins/eleventy-base-blog');
+const markdownPlugin = require('./site/plugins/markdown');
+const browserSyncPlugin = require('./site/plugins/browser-sync');
 
-
+// Site configuration.
 const notFoundPage = 'docs/404.html';
 const passthrough = { 'site/assets': 'assets/css'};
 
@@ -43,98 +40,16 @@ const eleventyOptions = {
 };
 
 module.exports = function (eleventyConfig) {
-  eleventyConfig.addPlugin(pluginRss);
-  eleventyConfig.addPlugin(pluginSyntaxHighlight);
-  eleventyConfig.addPlugin(pluginNavigation);
 
   eleventyConfig.setDataDeepMerge(true);
 
-  eleventyConfig.addLayoutAlias('post', 'post.njk');
+  // Plugins.
+  eleventyConfig.addPlugin(baseBlogPlugin);
+  eleventyConfig.addPlugin(markdownPlugin);
+  eleventyConfig.addPlugin(browserSyncPlugin, { notFoundPage });
 
-  eleventyConfig.addFilter('readableDate', (dateObj) => {
-    return DateTime.fromJSDate(dateObj, { zone: 'utc' }).toFormat(
-      'dd LLL yyyy'
-    );
-  });
-
-  // https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-date-string
-  eleventyConfig.addFilter('htmlDateString', (dateObj) => {
-    return DateTime.fromJSDate(dateObj, { zone: 'utc' }).toFormat('yyyy-LL-dd');
-  });
-
-  // Get the first `n` elements of a collection.
-  eleventyConfig.addFilter('head', (array, n) => {
-    if (!array) return [];
-    if (n < 0) {
-      return array.slice(n);
-    }
-
-    return array.slice(0, n);
-  });
-
-  eleventyConfig.addFilter('min', (...numbers) => {
-    return Math.min.apply(null, numbers);
-  });
-
-  eleventyConfig.addCollection('tagList', function (collection) {
-    let tagSet = new Set();
-    collection.getAll().forEach(function (item) {
-      if ('tags' in item.data) {
-        let tags = item.data.tags;
-
-        tags = tags.filter(function (item) {
-          switch (item) {
-            // this list should match the `filter` list in tags.njk
-            case 'all':
-            case 'nav':
-            case 'post':
-            case 'posts':
-              return false;
-          }
-
-          return true;
-        });
-
-        for (const tag of tags) {
-          tagSet.add(tag);
-        }
-      }
-    });
-
-    // returning an array in addCollection works in Eleventy 0.5.3
-    return [...tagSet];
-  });
-
+  // Static assets.
   eleventyConfig.addPassthroughCopy(passthrough);
-
-  /* Markdown Overrides */
-  let markdownLibrary = markdownIt({
-    html: true,
-    breaks: true,
-    linkify: true,
-  }).use(markdownItAnchor, {
-    permalink: true,
-    permalinkClass: 'direct-link',
-    permalinkSymbol: '#',
-  });
-  eleventyConfig.setLibrary('md', markdownLibrary);
-
-  // Browsersync Overrides
-  eleventyConfig.setBrowserSyncConfig({
-    callbacks: {
-      ready: function (err, browserSync) {
-        const content_404 = fs.readFileSync(notFoundPage);
-
-        browserSync.addMiddleware('*', (req, res) => {
-          // Provides the 404 content without redirect.
-          res.write(content_404);
-          res.end();
-        });
-      },
-    },
-    ui: false,
-    ghostMode: false,
-  });
 
   return eleventyOptions;
 };
