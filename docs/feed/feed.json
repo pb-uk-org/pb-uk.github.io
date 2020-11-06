@@ -9,10 +9,16 @@
     "url": "https://pb-uk.github.io/about-me/"
   },
   "items": [{
-      "id": "https://pb-uk.github.io/posts/firstpost/",
-      "url": "https://pb-uk.github.io/posts/firstpost/",
+      "id": "https://pb-uk.github.io/blog/sorting/",
+      "url": "https://pb-uk.github.io/blog/sorting/",
+      "title": "Sorting algorithms",
+      "content_html": "<p>So we need some sorting algorithms.</p>\n",
+      "date_published": "2020-11-06T00:00:00+00:00"
+    },{
+      "id": "https://pb-uk.github.io/blog/coming-soon/",
+      "url": "https://pb-uk.github.io/blog/coming-soon/",
       "title": "Coming soon!",
-      "content_html": "<p>Coming soon!</p>\n",
+      "content_html": "<p>Coming soon!</p>\n<pre class=\"language-js\"><code class=\"language-js\"><span class=\"token comment\">// Here is my hs</span><br><span class=\"token keyword\">function</span> <span class=\"token function\">mr</span><span class=\"token punctuation\">(</span><span class=\"token parameter\">blobby</span><span class=\"token punctuation\">)</span> <span class=\"token punctuation\">{</span><span class=\"token punctuation\">}</span></code></pre>\n",
       "date_published": "2020-11-05T00:00:00+00:00"
     }
   ]

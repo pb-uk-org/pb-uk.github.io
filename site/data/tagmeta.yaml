@@ -1,0 +1,13 @@
+# site/data/tagmeta.yaml
+
+meta:
+  description: About this site
+
+code:
+  description: Writing code
+
+maths:
+  description: Maths (or math if you are in the US)
+
+physics-forums:
+  description: Related to PhysicsForums

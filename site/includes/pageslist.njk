@@ -1,0 +1,21 @@
+{# site/includes/postlist.njk #}
+
+<ul>
+
+{% for post in postslist | sortByLocation %}
+
+  <li>{{ post.inputPath }}{{ post.path }} {{ post.breadcrumbs }}
+    <a href="{{ post.url | url }}" class="postlist-link">{% if post.data.title %}{{ post.data.title }}{% else %}<code>{{ post.url }}</code>{% endif %}</a>
+    {# Could have a tag for 'new' if it is new or 'updated' if updated recently
+    <time class="postlist-date" datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate }}</time>
+    #}
+    {% for itemtag in post.data.tags %}
+      {%- if collections.tagList.indexOf(itemtag) != -1 and itemtag !== tag -%}
+      {% set tagUrl %}/tags/{{ itemtag }}/{% endset %}
+      <a href="{{ tagUrl | url }}" class="{{ site.tagClass }}">{{ itemtag }}</a>
+      {%- endif -%}
+    {% endfor %}
+  </li>
+{% endfor %}
+
+</ul>

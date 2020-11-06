@@ -1,10 +1,14 @@
 ---
 layout: post.njk
-title: About Me
+title: About pbuk
 templateClass: tmpl-post
 eleventyNavigation:
-  key: About Me
+  key: About
   order: 3
+tags:
+  - pages
+  - info
+  - code
 ---
 
 I need to write something here.
