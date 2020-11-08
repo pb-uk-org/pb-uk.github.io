@@ -20,9 +20,8 @@
     }
 
     step() {
-      const { set, n, swapped, isSorted } = this;
-      if (isSorted) return this;
-      let { i } = this;
+      if (this.isSorted) return this;
+      const { set, i } = this;
       ++this.compares;
       if (set[i-1] > set[i]) {
         ++this.swaps;
@@ -30,8 +29,8 @@
         swap(set, i, i-1);
       }
       ++this.i;
-      if (this.i >= n) {
-        if (!swapped) {
+      if (this.i >= this.n) {
+        if (!this.swapped) {
           this.isSorted = true;
           return this;
         }
@@ -50,14 +49,14 @@
   const store = [];
   const id = 0;
 
-  store[id] = new classes.Bubble([1,2,3,4,5]);
+  store[id] = new classes.Bubble([9,0,1,2,3,4,5,6,7,8]);
 
   let anyUnsorted = true;
   let steps = 0;
   store.forEach((state) => {
     console.log(JSON.stringify(state));
   });
-  while (anyUnsorted && steps < 10) {
+  while (anyUnsorted && steps < 1000) {
     ++steps;
     anyUnsorted = false;
     store.forEach((sorter) => {
