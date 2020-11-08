@@ -6,15 +6,15 @@ function* improvedBubbleSortGenerator(set, { compare, swap }) {
       // Swap if set[i-1] > set[i].
       if (compare(set, i - 1, i)) {
         // Swap if set[i-1] > set[i].
-        yield set;
         swap(set, i - 1, i);
         newN = i;
+        yield set;
       } else {
         yield set;
       }
     }
-    n = newN
-  } while (n <= 1);
+    n = newN;
+  } while (n > 1);
   // The set is sorted.
   return set;
 }
