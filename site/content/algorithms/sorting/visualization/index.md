@@ -18,142 +18,37 @@ This is where my app goes.
 </div>
 {% endraw %}
 
+
+ <canvas id="canvas-01" width="200" height="100"></canvas>
+
+
 <!-- script src="/assets/js/visualize-sorting.js"></script -->
 <script>
 
+{% include _visualization.js %};
+
 let fn =
-{% include ../_improved-bubble-sort-generator.js %};
- 
+{% include _improved-bubble-sort-generator.js %};
 
-
-function Compare() {
-  this.count = 0;
-  this.last = [null, null, null];
-
-  function compare(set, a, b) {
-    ++this.count;
-    const result = set[a] > set[b] ? 1 : (set[a] < set[b] ? -1 : 0);
-    this.last = [a, b, result];
-    return result;
-  };
-
-  this.compare = compare.bind(this);
-}
-
-Compare.factory = function () {
-  return new Compare();
-}
-
-function Swap() {
-  this.count = 0;
-  this.last = [null, null];
-
-  function swap(set, a, b) {
-    ++this.count;
-    this.last = [a, b];
-    const temp = set[a];
-    set[a] = set[b];
-    set[b] = temp;
-  };
-  this.swap = swap.bind(this);
-}
-
-Swap.factory = function () {
-  return new Swap();
-}
-
-const compare = Compare.factory();
-const swap = Swap.factory();
-
-// The visualisation is a generator function.
-const vis = fn([5, 4, 3, 2, 1], { compare: compare.compare, swap: swap.swap });
-
-vis.compare = compare;
-vis.swap = swap;
-vis.algorithm = 'Improved bubble sort';
-vis.initial = 'Reversed';
-
-vis.render = function(value) {
-  console.log('Rendering', this.isDone, value, this.compare.count, this.swap.count);
-};
-
-const visualizations = [
-  vis,
-];
-
-let allDone = false;
-const finish = Date.now() + 2000;
-visualizations.forEach(vis => {
-  vis.render();
+const visualizations = new Visualizations({
+  render({ compare, swap }, value) {
+    console.log(value, compare.count, swap.count);
+  }
 });
-while (!allDone && Date.now() < finish) {
-  allDone = true;
-  visualizations.forEach(vis => {
-    if (vis.isDone) return;
-    const { done, value } = vis.next();
-    vis.isDone = done;
-    vis.render(value);
-    allDone &= done;
-  });
+
+visualizations.add({ generatorFunction: fn });
+
+function iterate() {
+  if (visualizations.allDone) return;
+  visualizations.step();
+  setTimeout(iterate, 200);
 }
 
-/*
-let fn =
-{% include ../_improved-bubble-sort-generator.js %};
- 
-function Compare() {
-  function compare(set, a, b) {
-    ++this.count;
-    const result = set[a] > set[b] ? 1 : (set[a] < set[b] ? -1 : 0);
-    this.last = [a, b, result];
-    return result;
-  };
-  return compare.bind({
-    count: 0,
-    last: [null, null, null],
-  });
-  compare.count = 0;
-  compare.last = [null, null, null];
-  return compare;
-}
-
-function Swap() {
-  function swap(set, a, b) {
-    ++this.count;
-    this.last = [a, b];
-    const temp = set[a];
-    set[a] = set[b];
-    set[b] = temp;
-  };
-  swap.count = 0;
-  swap.last = [null, null];
-  return swap;
-}
-
-console.log('Sorting function', fn.name, fn);
-
-const set = [5, 6, 7, -1,-1,3,5,3, 2, 1];
-const compare = new Compare;
-const swap = new Swap;
-
-console.log('Prepared', set, compare, swap);
-
-
-const sorter = fn(set, { compare, swap });
-
-console.log('Generator', sorter);
-console.log('Next', sorter.next(), compare.count, swap.count);
-console.log('Next', sorter.next(), compare.count, swap.count);
-console.log('Next', sorter.next(), compare.count, swap.count);
-console.log('Next', sorter.next(), compare.count, swap.count);
-console.log('Next', sorter.next(), compare.count, swap.count);
-console.log('Next', sorter.next(), compare.count, swap.count);
-console.log('Next', sorter.next(), compare.count, swap.count);
-console.log('Next', sorter.next(), compare.count, swap.count);
-*/
+visualizations.renderAll();
+iterate();
 
 </script>
 s
 ```js
-{% include ../_improved-bubble-sort-generator.js %}
+{% include _improved-bubble-sort-generator.js %}
 ```
