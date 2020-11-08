@@ -7,7 +7,7 @@ module.exports = (eleventyConfig) => {
   /* Markdown Overrides */
   let markdownLibrary = markdownIt({
     html: true,
-    breaks: true,
+    breaks: false,
     linkify: true,
     typographer: true,
     quotes: '“”‘’',

@@ -2,47 +2,52 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://pb-uk.github.io/blog/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/page-list/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/tags/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/tags/info/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/tags/code/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/tags/physics-forums/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/tags/pages/</loc>
-    <lastmod>2020-02-03</lastmod>
+    <loc>https://pb-uk.github.io/blog/coming-soon%20copy/</loc>
+    <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
     <loc>https://pb-uk.github.io/blog/coming-soon/</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/blog/</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/page-list/</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/tags/</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/tags/info/</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/tags/code/</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/tags/physics-forums/</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/tags/pages/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
@@ -79,5 +84,10 @@
   <url>
     <loc>https://pb-uk.github.io/algorithms/sorting/visualization/</loc>
     <lastmod>2020-11-06</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pb-uk.github.io/articles/</loc>
+    <lastmod>2020-11-07</lastmod>
   </url>
 </urlset>

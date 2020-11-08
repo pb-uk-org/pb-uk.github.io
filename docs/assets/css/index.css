@@ -74,16 +74,8 @@
   line-height: 100%;
   text-align: right;
 }
-.postlist-link {
-  display: inline-block;
-  padding: 0.25em 0.1875em; /* 4px 3px /16 */
-}
 .postlist-item-active .postlist-link {
   font-weight: bold;
-}
-.tmpl-home .postlist-link {
-  font-size: 1.1875em; /* 19px /16 */
-  font-weight: 700;
 }
 
 /* Direct Links / Markdown Headers */
@@ -102,31 +94,4 @@ a[href].direct-link:focus:visited,
 :hover > a[href].direct-link,
 :hover > a[href].direct-link:visited {
   color: #aaa;
-}
-
-/* Bulma removes formatting from h? elements. Put this back. */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: #363636;
-  font-size: 2rem;
-  font-weight: 600;
-}
-h2 {
-  font-size: 1.75rem;
-}
-h3 {
-  font-size: 1.5rem;
-}
-h4 {
-  font-size: 1.25rem;
-}
-h5 {
-  font-size: 1rem;
-}
-h6 {
-  font-size: 0.75rem;
 }

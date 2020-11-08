@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Vizualizing sorting algorithms
+title: Visualizing sorting algorithms
 # templateClass: tmpl-post
 # eleventyNavigation:
 #   key: About
@@ -9,5 +9,6 @@ tags:
   - pages
   - code
 ---
+# {{ title }}
 
 This is where my app goes.

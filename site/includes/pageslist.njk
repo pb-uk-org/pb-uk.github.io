@@ -2,10 +2,17 @@
 
 <ul>
 
-{% for post in postslist | sortByLocation %}
+{% for page in (postslist | sortByLocation) %}
+  {% set post = page.post %}
 
-  <li>{{ post.inputPath }}{{ post.path }} {{ post.breadcrumbs }}
-    <a href="{{ post.url | url }}" class="postlist-link">{% if post.data.title %}{{ post.data.title }}{% else %}<code>{{ post.url }}</code>{% endif %}</a>
+  <li>
+    {# TODO: decide what to do with the breadcrumbs, if anything. #}
+    {#
+    {% for crumb in page.breadcrumbs %}
+      <a href="{{ crumb.url }}" title="{{ crumb.text }}">&bull;</a>
+    {% endfor %}
+    #}
+    <a href="{{ post.url | url }}" class="is-size-5 postlist-link">{% if post.data.title %}{{ post.data.title }}{% else %}<code>{{ post.url }}</code>{% endif %}</a>
     {# Could have a tag for 'new' if it is new or 'updated' if updated recently
     <time class="postlist-date" datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate }}</time>
     #}

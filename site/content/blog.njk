@@ -3,10 +3,17 @@ layout: home.njk
 permalink: /blog/
 eleventyNavigation:
   key: Blog
-  order: 2
+  order: 30
 ---
 
-<h1>Blog posts</h1>
+<div class="my-3">
+  <h1 class="title">Blog posts</h1>
+</div>
 
+{# Display blog posts if there are any. #}
 {% set postslist = collections.posts %}
-{% include "postslist.njk" %}
+{% if postslist.length %}
+<div class="my-5">
+  {% include "postslist.njk" %}
+</div>
+{% endif %}

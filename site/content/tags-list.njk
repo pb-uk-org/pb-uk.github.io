@@ -3,7 +3,7 @@ permalink: /tags/
 layout: home.njk
 eleventyNavigation:
    key: Tags
-   order: 2
+   order: 40
 ---
 <h1>Tags</h1>
 
@@ -12,7 +12,7 @@ eleventyNavigation:
   {% set tagUrl %}/tags/{{ tag }}/{% endset %}
   <li>
     <a href="{{ tagUrl | url }}" class="{{ site.tagClass }}">{{ tag }}</a>
-    {{ tagmeta[tag].description }}
+    {{ tagmeta[tag].description | safe }}
     ({{ collections[tag].length }})
   </li>
 {% endfor %}

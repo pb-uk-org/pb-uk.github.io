@@ -1,17 +1,13 @@
 ---
-title: Coming soon!
-description: This is a post on My Blog about agile frameworks.
+title: Coming soon
+description: This site is not yet ready, please come back later.
 date: 2020-11-05
 tags:
   - posts # Makes this a blog post.
   - info
-  - code
-layout: post.njk
+layout: post
 ---
 
-Coming soon!
+# {{ title }}
 
-```js
-// Here is my hs
-function mr(blobby) {}
-```
+This site is not yet ready, please come back later.
