@@ -12,3 +12,10 @@ tags:
 # {{ title }}
 
 This is where my app goes.
+{% raw %}
+<div id="app">
+<div>{{ message }}</div>
+</div>
+{% endraw %}
+
+<script src="/assets/js/visualize-sorting.js"></script>
