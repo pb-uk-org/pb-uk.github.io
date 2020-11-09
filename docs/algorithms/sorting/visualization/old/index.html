@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizing sorting algorithms</title>
+    <title>Old visualizing sorting algorithms</title>
     <meta name="description" content="Paul&#39;s home page miscellany.">
 
     <link rel="stylesheet" href="/assets/css/prism/prism-solarizedlight.css">
@@ -13,11 +13,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/buefy/dist/buefy.min.css">
     <!-- link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9/css/bulma.css" -->
 
-
-    <script async src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <!-- Full bundle -->
-    <script async src="https://cdn.jsdelivr.net/npm/buefy/dist/buefy.min.js"></script>
-    <script>window.addEventListener('load',function() {Vue && vueApp && new Vue(vueApp)})</script>
 
 
     <link rel="stylesheet" href="/assets/css/index.css">
@@ -61,32 +56,69 @@
 
   
     
+      <li><a class="px-1" href="/algorithms/sorting/visualization/">visualization</a></li>
+    
+  
+
+  
+    
   
 
   </ul>
 </nav>
 
 <main class="content">
-
-<h1>Visualizing sorting algorithms</h1>
-
-<div id="app"></div>
-
-
-<script type="text/x-template" id="app-template">
-<div>
-{{ message }}
-<div>
-  {{ title }}
-  <div ref="canvas-target"></div>
+<h1 id="old-visualizing-sorting-algorithms">Old visualizing sorting algorithms <a class="direct-link" href="#old-visualizing-sorting-algorithms">#</a></h1>
+<p>This is where my app goes.</p>
+<div id="app">
+<div>{{ message }}</div>
 </div>
+<div class="card">
+  <div class="card-content">
+    <canvas id="canvas-0" data-width="canvas.width" data-height="canvas.height"></canvas>
+  </div>
+  <div class="card-content">
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      Phasellus nec iaculis mauris. <a>@bulmaio</a>.
+      <a href="#">#css</a> <a href="#">#responsive</a>
+      <br>
+      <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+    </div>
 </div>
-</script>
-
-<script type="text/x-template" id="vis-template">
-</script>
-
-
+<div>
+  <canvas id="canvas-1" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-2" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-3" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-4" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-5" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-6" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-7" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-8" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-9" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-10" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-11" width="320" height="200"></canvas>
+</div>
 <script>
 
 function render({ compare, swap, set, chart }, value, done, repaint) {
@@ -95,6 +127,7 @@ function render({ compare, swap, set, chart }, value, done, repaint) {
     return;
   }
   const { last } = compare;
+  console.log(last);
   chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
 }
 
@@ -280,9 +313,8 @@ function shuffle(array) {
 }
 ;
 
-const algorithms = [];
-
-  const fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+let fn =
+function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
   for (let i = 0; i < n - 1; ++i) {
     for (let j = 0; j < n - i - 1; ++j) {
@@ -297,10 +329,6 @@ const algorithms = [];
   return set;
 }
 ;
-  algorithms.push({
-    fn,
-  });
-
 
 const visualizations = new Visualizations({ render });
 const fps = false;
@@ -315,6 +343,20 @@ function getSet() {
   return set;
 }
 
+for (let i = 0; i < 10; i++) {
+  const set = getSet();
+  console.log(set);
+  visualizations.add({
+    generatorFunction: fn,
+    set,
+    chart: {
+      el: `#canvas-${i}`,
+      n: set.length,
+      max,
+    },
+  });
+}
+
 function iterate() {
   if (visualizations.allDone) return;
   visualizations.step();
@@ -326,43 +368,19 @@ function iterate() {
   setTimeout(iterate, fps === false ? 0 : 1000 / fps);
 }
 
-vueApp = {
-  el: '#app',
-  template: '#app-template',
-  data() {
-    return {
-      title: 'My title',
-      message: 'loaded',
-    };
-  },
-  mounted() {
-    console.log(algorithms);
-    for (let i = 0; i < 1; i++) {
-      const set = getSet();
-      visualizations.add({
-        generatorFunction: algorithms[0].fn,
-        set,
-        chart: {
-          $el: this.$refs['canvas-target'],
-          n: set.length,
-          max,
-          height: 100,
-          width: 200,
-        },
-      });
-    }
-    visualizations.renderAll(true);
-    iterate();
-  }, // mounted()
-}
+visualizations.renderAll(true);
+iterate();
+
 </script>
+<p>s</p>
+<pre class="language-js"><code class="language-js"><span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">improvedBubbleSortGenerator</span><span class="token punctuation">(</span><span class="token parameter">set<span class="token punctuation">,</span> <span class="token punctuation">{</span> compare<span class="token punctuation">,</span> swap <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">let</span> n <span class="token operator">=</span> set<span class="token punctuation">.</span>length<span class="token punctuation">;</span><br>  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> n <span class="token operator">-</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">++</span>j<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compare</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j<span class="token punctuation">,</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>        <span class="token function">swap</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j<span class="token punctuation">,</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br>  <span class="token keyword">return</span> set<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br></code></pre>
 
 </main>
 <hr>
 <div class="columns pb-5">
-  <div class="column is-size-7 py-0">Previous: <a href="/algorithms/sorting/visualization/old/">Old visualizing sorting algorithms</a>
+  <div class="column is-size-7 py-0">Previous: <a href="/algorithms/number-theory/">Number theory</a>
   </div>
-  <div class="column has-text-right is-size-7 py-0">
+  <div class="column has-text-right is-size-7 py-0">Next: <a href="/algorithms/sorting/visualization/">Visualizing sorting algorithms</a>
   </div>
 </div>
 
@@ -373,6 +391,6 @@ vueApp = {
       class="footer has-text-centered is-size-7 py-1"
       ><a href="/about/#copyright">Copyright © 2020 PBUK</a></footer>
 
-    <!-- Current page: /algorithms/sorting/visualization/ -->
+    <!-- Current page: /algorithms/sorting/visualization/old/ -->
   </body>
 </html>

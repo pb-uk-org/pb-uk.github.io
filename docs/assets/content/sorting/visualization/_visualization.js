@@ -1,14 +1,13 @@
 
 
 class Chart {
-  constructor({ $el, n, max, height, width }) {
-    // const $el = document.querySelector(el);
-    this.height = height;
-    this.width = width; 
-    $el.innerHTML = `<canvas width="${width}" height="${height}"></canvas>`;
+  constructor({ el, n, max }) {
+    const $el = document.querySelector(el);
     this.n = n;
     this.max = max;
-    this.ctx = $el.firstChild.getContext('2d');
+    this.ctx = $el.getContext('2d');
+    this.height = $el.height;
+    this.width = $el.width; 
  
     this.xScale = Math.floor(this.width / n);
     this.yScale = this.height / max;

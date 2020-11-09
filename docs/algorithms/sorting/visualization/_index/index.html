@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PB UK</title>
+    <title>Visualizing sorting algorithms</title>
     <meta name="description" content="Paul&#39;s home page miscellany.">
 
     <link rel="stylesheet" href="/assets/css/prism/prism-solarizedlight.css">
@@ -13,6 +13,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/buefy/dist/buefy.min.css">
     <!-- link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9/css/bulma.css" -->
 
+
+    <script async src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- Full bundle -->
+    <script async src="https://cdn.jsdelivr.net/npm/buefy/dist/buefy.min.js"></script>
+    <script>window.addEventListener('load',function() {Vue && vueApp && new Vue(vueApp)})</script>
 
 
     <link rel="stylesheet" href="/assets/css/index.css">
@@ -28,7 +33,7 @@
       <a class="navbar-item" href="/">PB UK</a>
       <a class="navbar-item" href="/articles/">Articles</a>
       <a class="navbar-item" href="/blog/">Blog</a>
-      <a class="navbar-item is-active" href="/tags/">Tags</a>
+      <a class="navbar-item" href="/tags/">Tags</a>
       <a class="navbar-item" href="/about/">About</a>
 
     </div>
@@ -36,36 +41,64 @@
 </nav>
 
 
-    <section class="section py-0 tmpl-home">
+    <section class="section py-0">
       <div class="container">
         
-<h1>Tags</h1>
-
-<ul>
-
-  
-  <li>
-    <a href="/tags/info/" class="tag is-link is-light">info</a>
-    About this site
-    (3)
-  </li>
+<nav class="breadcrumb my-3 is-size-7" aria-label="breadcrumbs">
+  <ul>
 
   
-  <li>
-    <a href="/tags/code/" class="tag is-link is-light">code</a>
-    Writing code
-    (9)
-  </li>
+    
+      <li>In <a class="px-1" href="/algorithms/">algorithms</a></li>
+    
+  
 
   
-  <li>
-    <a href="/tags/physics-forums/" class="tag is-link is-light">physics-forums</a>
-    Related to <a target="_blank" href="#">PhysicsForums</a>
-    (1)
-  </li>
+    
+      <li><a class="px-1" href="/algorithms/sorting/">sorting</a></li>
+    
+  
 
-</ul>
+  
+    
+      <li><a class="px-1" href="/algorithms/sorting/visualization/">visualization</a></li>
+    
+  
 
+  
+    
+  
+
+  </ul>
+</nav>
+
+<main class="content">
+
+Visualizing sorting algorithms
+<div id="app"><div>
+
+</div></div>
+
+
+<script>
+vueApp = {
+  el: '#app',
+  data() {
+    return {
+      message: 'loaded',
+    };
+  },
+}
+</script>
+
+</main>
+<hr>
+<div class="columns pb-5">
+  <div class="column is-size-7 py-0">Previous: <a href="/algorithms/sorting/visualization/old/">Visualizing sorting algorithms</a>
+  </div>
+  <div class="column has-text-right is-size-7 py-0">
+  </div>
+</div>
 
       </div>
     </section>
@@ -74,6 +107,6 @@
       class="footer has-text-centered is-size-7 py-1"
       ><a href="/about/#copyright">Copyright © 2020 PBUK</a></footer>
 
-    <!-- Current page: /tags/ -->
+    <!-- Current page: /algorithms/sorting/visualization/_index/ -->
   </body>
 </html>

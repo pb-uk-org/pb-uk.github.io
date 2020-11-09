@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Visualizing sorting algorithms
+title: Old visualizing sorting algorithms
 # templateClass: tmpl-post
 # eleventyNavigation:
 #   key: About
