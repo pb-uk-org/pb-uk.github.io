@@ -83,7 +83,7 @@ function render({ compare, swap, set, chart }, value, done, repaint) {
 {% include _visualization.js %};
 
 let fn =
-{% include _improved-bubble-sort-generator.js %};
+{% include _bubble-sort-generator.js %};
 
 const visualizations = new Visualizations({ render });
 const fps = false;
@@ -129,5 +129,5 @@ iterate();
 </script>
 s
 ```js
-{% include _improved-bubble-sort-generator.js %}
+{% include _bubble-sort-generator.js %}
 ```

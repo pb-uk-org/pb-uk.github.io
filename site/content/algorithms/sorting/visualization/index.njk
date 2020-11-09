@@ -11,17 +11,17 @@ tags:
 hasVue: true
 algorithms:
   -
-    name: Improved bubble sort
-    file: ./_improved-bubble-sort-generator.js
+    name: Bubble sort
+    file: ./_bubble-sort-generator.js
   -
-    name: Improved bubble sort 2
-    file: ./_improved-bubble-sort-generator.js
+    name: Quicksort
+    file: ./_quicksort-generator.js
   -
     name: Improved bubble sort 3
-    file: ./_improved-bubble-sort-generator.js
+    file: ./_bubble-sort-generator.js
   -
     name: Improved bubble sort 4
-    file: ./_improved-bubble-sort-generator.js
+    file: ./_bubble-sort-generator.js
 sets:
   - 
     name: Random
@@ -39,6 +39,14 @@ sets:
 
 <h1>{{ title }}</h1>
 
+<div class="notification is-warning xis-light">
+<h3>Abandoned</h3>
+<p>This page - in fact this whole section - has been abandoned. It needs
+refactoring to cater for quicksort's recursion and to deal with yielding and
+painting after swaps.
+</p>
+</div>
+
 <div id="app"></div>
 
 {% raw %}
@@ -46,14 +54,14 @@ sets:
 <div>
   <div>
     <div v-for="(algorithm, i) in algorithms" class="columns is-multiline">
-      <div class="column is-12">
-        <h3>{{ algorithm.name }}</h3>
+      <div class="column is-12 pt-5 pb-0">
+        <h3 class="mb-2">{{ algorithm.name }}</h3>
       </div>
-      <div v-for="(set, j) in sets" class="column">
+      <div v-for="(set, j) in sets" class="column py-0">
         <h4 class="my-0">{{ set.name }}</h4>
         <div v-if="logData">
-          Compares: {{ logData[`${i}-${j}`].compares }}
-          swaps: {{ logData[`${i}-${j}`].swaps }}
+          Compares: {{ formatInteger(logData[`${i}-${j}`].compares) }}
+          swaps: {{ formatInteger(logData[`${i}-${j}`].swaps) }}
         </div>
         <div v-bind:ref="`canvas-${i}-${j}`"></div>
       </div>
@@ -96,6 +104,9 @@ function render({ compare, swap, set, chart, id }, value, done, repaint) {
 }
 
 const max = 100;
+
+
+const formatter = new Intl.NumberFormat().format;
 
 function createVisualisations({ targets, algorithms, sets }) {
   const logData = {};
@@ -173,6 +184,10 @@ vueApp = {
     }, // createTargets()
 
     createVisualisations,
+
+    formatInteger(int) {
+      return formatter(int);
+    },
 
     log(id, data) {
       this.logData[id].compares = data.compare.count;

@@ -70,6 +70,14 @@
 
 <h1>Visualizing sorting algorithms</h1>
 
+<div class="notification is-warning xis-light">
+<h3>Abandoned</h3>
+<p>This page - in fact this whole section - has been abandoned. It needs
+refactoring to cater for quicksort's recursion and to deal with yielding and
+painting after swaps.
+</p>
+</div>
+
 <div id="app"></div>
 
 
@@ -77,14 +85,14 @@
 <div>
   <div>
     <div v-for="(algorithm, i) in algorithms" class="columns is-multiline">
-      <div class="column is-12">
-        <h3>{{ algorithm.name }}</h3>
+      <div class="column is-12 pt-5 pb-0">
+        <h3 class="mb-2">{{ algorithm.name }}</h3>
       </div>
-      <div v-for="(set, j) in sets" class="column">
+      <div v-for="(set, j) in sets" class="column py-0">
         <h4 class="my-0">{{ set.name }}</h4>
         <div v-if="logData">
-          Compares: {{ logData[`${i}-${j}`].compares }}
-          swaps: {{ logData[`${i}-${j}`].swaps }}
+          Compares: {{ formatInteger(logData[`${i}-${j}`].compares) }}
+          swaps: {{ formatInteger(logData[`${i}-${j}`].swaps) }}
         </div>
         <div v-bind:ref="`canvas-${i}-${j}`"></div>
       </div>
@@ -311,7 +319,8 @@ function shuffle(array) {
 const algorithms = [];
 let fn;
 
-  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  fn = // Bubble sort see pbuk.uk/algorithms/sorting/visualization
+function* bubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
   // Start comparing at the end for better performance when nearly sorted.
   for (let i = n - 1; i > 0; --i) {
@@ -328,70 +337,65 @@ let fn;
   }
   return set;
 }
-
-/*
-function* improvedBubbleSortGenerator(set, { compare, swap }) {
-  let n = set.length;
-  for (let i = n - 1; i > 0; --i) {
-    for (let j = n - i + 1; j >= 0; --j) {
-      if (compare(set, j, j + 1) > 0) {
-        yield set;
-        swap(set, j, j + 1);
-      } else {
-        yield set;
-      }
-    }
-  }
-  return set;
-}
-*/
 ;
   algorithms.push({
-    name: 'Improved bubble sort',
+    name: 'Bubble sort',
     fn,
   });
 
-  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
-  let n = set.length;
-  // Start comparing at the end for better performance when nearly sorted.
-  for (let i = n - 1; i > 0; --i) {
-    // Bubble towards the start.
-    for (let j = n - 1; j > n - i - 1; --j) {
-      if (compare(set, j - 1, j) > 0) {
-        yield set;
-        swap(set, j - 1, j);
-      } else {
-        yield set;
-      }
-    }
-    // The (n - i - 1)'th element is now correct.
-  }
-  return set;
-}
+  fn = // Quicksort see https://pbuk.uk/algorithms/sorting/visualization
+function* quicksortGenerator(a, { compare, swap }, _l, _r) {
+  const l = _l != null ? _l : 0;
+  const r = _r != null ? _r : a.length;
+  let i = l - 1;
+  let j = r;
+  let p = l - 1;
+  let q = r;
+  const vIndex = r;
 
-/*
-function* improvedBubbleSortGenerator(set, { compare, swap }) {
-  let n = set.length;
-  for (let i = n - 1; i > 0; --i) {
-    for (let j = n - i + 1; j >= 0; --j) {
-      if (compare(set, j, j + 1) > 0) {
-        yield set;
-        swap(set, j, j + 1);
-      } else {
-        yield set;
-      }
+  if (r <= l) return a;
+
+  for (;;) {
+    while (compare(a, ++i, vIndex) < 0) {
+      yield a;
+    }
+    while (compare(a, vIndex, --j) < 0) {
+      yield a;
+      if (j === l) break;
+    }
+    if (i >= j) break;
+    swap(a, i, j);
+    if (compare(a, i, vIndex) === 0) {
+      yield a;
+      p++;
+      swap(a, p, i);
+    }
+    if (compare(a, vIndex, j) === 0) {
+      yield a;
+      q--;
+      swap(a, j, q);
     }
   }
-  return set;
+  swap(a, i, r);
+  j = i - 1;
+  i = i + 1;
+  for (let k = l; k < p; k++, j--) {
+    swap(a, k, j);
+  }
+  for (let k = r-1; k > q; k--, i++) {
+    swap(a, i, k);
+  }
+  yield * quicksortGenerator(a, { compare, swap }, l, j);
+  yield * quicksortGenerator(a, { compare, swap }, i, r);
 }
-*/
 ;
   algorithms.push({
-    name: 'Improved bubble sort 2',
+    name: 'Quicksort',
     fn,
   });
 
-  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  fn = // Bubble sort see pbuk.uk/algorithms/sorting/visualization
+function* bubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
   // Start comparing at the end for better performance when nearly sorted.
   for (let i = n - 1; i > 0; --i) {
@@ -408,30 +412,14 @@ function* improvedBubbleSortGenerator(set, { compare, swap }) {
   }
   return set;
 }
-
-/*
-function* improvedBubbleSortGenerator(set, { compare, swap }) {
-  let n = set.length;
-  for (let i = n - 1; i > 0; --i) {
-    for (let j = n - i + 1; j >= 0; --j) {
-      if (compare(set, j, j + 1) > 0) {
-        yield set;
-        swap(set, j, j + 1);
-      } else {
-        yield set;
-      }
-    }
-  }
-  return set;
-}
-*/
 ;
   algorithms.push({
     name: 'Improved bubble sort 3',
     fn,
   });
 
-  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  fn = // Bubble sort see pbuk.uk/algorithms/sorting/visualization
+function* bubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
   // Start comparing at the end for better performance when nearly sorted.
   for (let i = n - 1; i > 0; --i) {
@@ -448,23 +436,6 @@ function* improvedBubbleSortGenerator(set, { compare, swap }) {
   }
   return set;
 }
-
-/*
-function* improvedBubbleSortGenerator(set, { compare, swap }) {
-  let n = set.length;
-  for (let i = n - 1; i > 0; --i) {
-    for (let j = n - i + 1; j >= 0; --j) {
-      if (compare(set, j, j + 1) > 0) {
-        yield set;
-        swap(set, j, j + 1);
-      } else {
-        yield set;
-      }
-    }
-  }
-  return set;
-}
-*/
 ;
   algorithms.push({
     name: 'Improved bubble sort 4',
@@ -506,6 +477,9 @@ function render({ compare, swap, set, chart, id }, value, done, repaint) {
 }
 
 const max = 100;
+
+
+const formatter = new Intl.NumberFormat().format;
 
 function createVisualisations({ targets, algorithms, sets }) {
   const logData = {};
@@ -583,6 +557,10 @@ vueApp = {
     }, // createTargets()
 
     createVisualisations,
+
+    formatInteger(int) {
+      return formatter(int);
+    },
 
     log(id, data) {
       this.logData[id].compares = data.compare.count;
