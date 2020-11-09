@@ -18,33 +18,51 @@ This is where my app goes.
 </div>
 {% endraw %}
 
+<canvas id="canvas-01" width="200" height="100"></canvas>
 
- <canvas id="canvas-01" width="200" height="100"></canvas>
-
-
-<!-- script src="/assets/js/visualize-sorting.js"></script -->
 <script>
+
+function render({ compare, swap, set, chart }, value, done, repaint) {
+  if (repaint) {
+    chart.repaint(set);
+    return;
+  }
+  console.log(set, value, done, repaint);
+  const { last } = swap;
+  chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
+}
 
 {% include _visualization.js %};
 
 let fn =
 {% include _improved-bubble-sort-generator.js %};
 
-const visualizations = new Visualizations({
-  render({ compare, swap }, value) {
-    console.log(value, compare.count, swap.count);
-  }
-});
+const visualizations = new Visualizations({ render });
 
-visualizations.add({ generatorFunction: fn });
+const set = [5, 4, 3, 2, 1];
+
+visualizations.add({
+  generatorFunction: fn,
+  set,
+  chart: {
+    el: '#canvas-01',
+    n: set.length,
+    max: 5,
+  },
+});
 
 function iterate() {
   if (visualizations.allDone) return;
   visualizations.step();
-  setTimeout(iterate, 200);
+  if (visualizations.allDone) {
+    setTimeout(() => {
+      visualizations.renderAll(true);
+    }, 100);
+  };
+  setTimeout(iterate, 100);
 }
 
-visualizations.renderAll();
+visualizations.renderAll(true);
 iterate();
 
 </script>

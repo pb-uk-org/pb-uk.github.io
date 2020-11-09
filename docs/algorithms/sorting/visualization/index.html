@@ -68,9 +68,87 @@
 <div>{{ message }}</div>
 </div>
 <p><canvas id="canvas-01" width="200" height="100"></canvas></p>
-<!-- script src="/assets/js/visualize-sorting.js"></script -->
 <script>
 
+function render({ compare, swap, set, chart }, value, done, repaint) {
+  if (repaint) {
+    chart.repaint(set);
+    return;
+  }
+  console.log(set, value, done, repaint);
+  const { last } = swap;
+  chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
+}
+
+
+
+class Chart {
+  constructor({ el, n, max }) {
+    const $el = document.querySelector(el);
+    this.n = n;
+    this.max = max;
+    this.ctx = $el.getContext('2d');
+    this.height = $el.height;
+    this.width = $el.width; 
+ 
+    this.xScale = Math.floor(this.width / n);
+    this.yScale = this.height / max;
+    this.last = false;
+  }
+
+  draw(aIndex, aValue, bIndex, bValue, swap) {
+    const { xScale, yScale, height } = this;
+
+    if (this.last) {
+      const [ai, av, bi, bv, sw] = this.last;
+      if (sw > 0) {
+        // They were swapped so paint out the old positions.
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillRect(ai * xScale, height - av * yScale, xScale, height);
+        this.ctx.fillRect(bi * xScale, height - bv * yScale, xScale, height);
+        // Paint the new positions in in grey.
+        this.ctx.fillStyle = 'grey';
+        this.ctx.fillRect(ai * xScale, height - bv * yScale, xScale, height);
+        this.ctx.fillRect(bi * xScale, height - av * yScale, xScale, height);
+      } else {
+        // They were not swapped so just repaint in grey.
+        this.ctx.fillStyle = 'grey';
+        this.ctx.fillRect(ai * xScale, height - av * yScale, xScale, height);
+        this.ctx.fillRect(bi * xScale, height - bv * yScale, xScale, height);
+      }
+    }
+
+    if (swap > 0) {
+      // They will be swapped so repaint in red.
+      this.ctx.fillStyle = 'red';
+      this.ctx.fillRect(aIndex * xScale, height - aValue * yScale, xScale, height);
+      this.ctx.fillRect(bIndex * xScale, height - bValue * yScale, xScale, height);
+    } else {
+      // They are not going to be swapped so repaint in green.
+      this.ctx.fillStyle = 'green';
+      this.ctx.fillRect(aIndex * xScale, height - aValue * yScale, xScale, height);
+      this.ctx.fillRect(bIndex * xScale, height - bValue * yScale, xScale, height);
+    }
+
+    // Remember what we did for next time.
+    this.last = [ aIndex, aValue, bIndex, bValue, swap ];
+  }
+
+  repaint(set) {
+    console.log('repainting');
+    const { xScale, yScale, height, width } = this;
+
+    // Paint out everything.
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillRect(0, 0, width, height);
+
+    this.ctx.fillStyle = 'grey';
+    set.forEach((value, i) => {
+      // Paint the new positions in in grey.
+      this.ctx.fillRect(i * xScale, height - value * yScale, xScale, height);
+    });
+  }
+}
 
 class Visualizations {
   constructor({ render }) {
@@ -80,19 +158,17 @@ class Visualizations {
   }
 
   add(options) {
-    this.visualizations.push(new Visualization({
-      ...options,
-    }));
+    this.visualizations.push(new Visualization(options));
   }
 
-  renderAll() {
+  renderAll(repaint) {
     this.visualizations.forEach(vis => {
-      this.render(vis);
+      this.render(vis, vis.set, vis.isDone, repaint);
     });
   }
 
-  render(vis, value) {
-    console.log(vis, value);
+  render({ compare, swap, set }, value, done, repaint) {
+    console.log(done || false, value || set, compare.last, compare.count, swap.count);
   }
 
   step() {
@@ -102,7 +178,7 @@ class Visualizations {
       if (vis.isDone) return;
       const { done, value } = vis.next();
       vis.isDone = done;
-      this.render(vis, value);
+      this.render(vis, value, done);
       allDone &= done;
     });
     this.allDone = allDone;
@@ -113,13 +189,17 @@ class Visualization {
   constructor({
     generatorFunction,
     render,
+    set,
+    chart,
   }) {
     this.compare = new Compare();
     this.swap = new Swap();
     this.render = render;
+    this.set = set;
+    this.chart = new Chart(chart);
 
     // The visualisation is a generator function.
-    this.generator = generatorFunction([5, 4, 3, 2, 1], {
+    this.generator = generatorFunction(set, {
       compare: this.compare.compare,
       swap: this.swap.swap,
     });
@@ -168,6 +248,22 @@ class Swap {
 let fn =
 function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
+  for (let i = 0; i < n - 1; ++i) {
+    for (let j = 0; j < n - i - 1; ++j) {
+      if (compare(set, j, j + 1) > 0) {
+        yield set;
+        swap(set, j, j + 1);
+      } else {
+        yield set;
+      }
+    }
+  }
+  return set;
+}
+
+/*
+function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
   do {
     let newN = 0;
     for (let i = 1; i < n; ++i) {
@@ -186,28 +282,40 @@ function* improvedBubbleSortGenerator(set, { compare, swap }) {
   // The set is sorted.
   return set;
 }
+*/
 ;
 
-const visualizations = new Visualizations({
-  render({ compare, swap }, value) {
-    console.log(value, compare.count, swap.count);
-  }
-});
+const visualizations = new Visualizations({ render });
 
-visualizations.add({ generatorFunction: fn });
+const set = [5, 4, 3, 2, 1];
+
+visualizations.add({
+  generatorFunction: fn,
+  set,
+  chart: {
+    el: '#canvas-01',
+    n: set.length,
+    max: 5,
+  },
+});
 
 function iterate() {
   if (visualizations.allDone) return;
   visualizations.step();
-  setTimeout(iterate, 200);
+  if (visualizations.allDone) {
+    setTimeout(() => {
+      visualizations.renderAll(true);
+    }, 100);
+  };
+  setTimeout(iterate, 100);
 }
 
-visualizations.renderAll();
+visualizations.renderAll(true);
 iterate();
 
 </script>
 <p>s</p>
-<pre class="language-js"><code class="language-js"><span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">improvedBubbleSortGenerator</span><span class="token punctuation">(</span><span class="token parameter">set<span class="token punctuation">,</span> <span class="token punctuation">{</span> compare<span class="token punctuation">,</span> swap <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">let</span> n <span class="token operator">=</span> set<span class="token punctuation">.</span>length<span class="token punctuation">;</span><br>  <span class="token keyword">do</span> <span class="token punctuation">{</span><br>    <span class="token keyword">let</span> newN <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><br>    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>      <span class="token comment">// Swap if set[i-1] > set[i].</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compare</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>        <span class="token comment">// Swap if set[i-1] > set[i].</span><br>        <span class="token function">swap</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        newN <span class="token operator">=</span> i<span class="token punctuation">;</span><br>      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br>    n <span class="token operator">=</span> newN<span class="token punctuation">;</span><br>  <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>n <span class="token operator">></span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token comment">// The set is sorted.</span><br>  <span class="token keyword">return</span> set<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br></code></pre>
+<pre class="language-js"><code class="language-js"><span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">improvedBubbleSortGenerator</span><span class="token punctuation">(</span><span class="token parameter">set<span class="token punctuation">,</span> <span class="token punctuation">{</span> compare<span class="token punctuation">,</span> swap <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">let</span> n <span class="token operator">=</span> set<span class="token punctuation">.</span>length<span class="token punctuation">;</span><br>  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> n <span class="token operator">-</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">++</span>j<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compare</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j<span class="token punctuation">,</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>        <span class="token function">swap</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j<span class="token punctuation">,</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br>  <span class="token keyword">return</span> set<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token comment">/*<br>function* improvedBubbleSortGenerator(set, { compare, swap }) {<br>  let n = set.length;<br>  do {<br>    let newN = 0;<br>    for (let i = 1; i &lt; n; ++i) {<br>      // Swap if set[i-1] > set[i].<br>      if (compare(set, i - 1, i)) {<br>        yield set;<br>        // Swap if set[i-1] > set[i].<br>        swap(set, i - 1, i);<br>        newN = i;<br>      } else {<br>        yield set;<br>      }<br>    }<br>    n = newN;<br>  } while (n > 1);<br>  // The set is sorted.<br>  return set;<br>}<br>*/</span><br></code></pre>
 
 </main>
 <hr>
