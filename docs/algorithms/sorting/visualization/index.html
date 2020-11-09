@@ -78,25 +78,18 @@
 {{ message }}
 <div>
   {{ title }}
-  <div ref="canvas-target"></div>
+  <div v-for="(algorithm, i) in algorithms">
+    <div v-for="(set, j) in sets">
+      algorithm: {{ i }} set {{ j }}
+      <div v-bind:ref="`canvas-${i}-${j}`"></div>
+    </div>
+  </div>
 </div>
 </div>
-</script>
-
-<script type="text/x-template" id="vis-template">
 </script>
 
 
 <script>
-
-function render({ compare, swap, set, chart }, value, done, repaint) {
-  if (repaint) {
-    chart.repaint(set);
-    return;
-  }
-  const { last } = compare;
-  chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
-}
 
 
 
@@ -281,8 +274,142 @@ function shuffle(array) {
 ;
 
 const algorithms = [];
+let fn;
 
-  const fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = 0; i < n - 1; ++i) {
+    for (let j = 0; j < n - i - 1; ++j) {
+      if (compare(set, j, j + 1) > 0) {
+        yield set;
+        swap(set, j, j + 1);
+      } else {
+        yield set;
+      }
+    }
+  }
+  return set;
+}
+;
+  algorithms.push({
+    fn,
+  });
+
+  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = 0; i < n - 1; ++i) {
+    for (let j = 0; j < n - i - 1; ++j) {
+      if (compare(set, j, j + 1) > 0) {
+        yield set;
+        swap(set, j, j + 1);
+      } else {
+        yield set;
+      }
+    }
+  }
+  return set;
+}
+;
+  algorithms.push({
+    fn,
+  });
+
+  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = 0; i < n - 1; ++i) {
+    for (let j = 0; j < n - i - 1; ++j) {
+      if (compare(set, j, j + 1) > 0) {
+        yield set;
+        swap(set, j, j + 1);
+      } else {
+        yield set;
+      }
+    }
+  }
+  return set;
+}
+;
+  algorithms.push({
+    fn,
+  });
+
+  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = 0; i < n - 1; ++i) {
+    for (let j = 0; j < n - i - 1; ++j) {
+      if (compare(set, j, j + 1) > 0) {
+        yield set;
+        swap(set, j, j + 1);
+      } else {
+        yield set;
+      }
+    }
+  }
+  return set;
+}
+;
+  algorithms.push({
+    fn,
+  });
+
+  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = 0; i < n - 1; ++i) {
+    for (let j = 0; j < n - i - 1; ++j) {
+      if (compare(set, j, j + 1) > 0) {
+        yield set;
+        swap(set, j, j + 1);
+      } else {
+        yield set;
+      }
+    }
+  }
+  return set;
+}
+;
+  algorithms.push({
+    fn,
+  });
+
+  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = 0; i < n - 1; ++i) {
+    for (let j = 0; j < n - i - 1; ++j) {
+      if (compare(set, j, j + 1) > 0) {
+        yield set;
+        swap(set, j, j + 1);
+      } else {
+        yield set;
+      }
+    }
+  }
+  return set;
+}
+;
+  algorithms.push({
+    fn,
+  });
+
+  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = 0; i < n - 1; ++i) {
+    for (let j = 0; j < n - i - 1; ++j) {
+      if (compare(set, j, j + 1) > 0) {
+        yield set;
+        swap(set, j, j + 1);
+      } else {
+        yield set;
+      }
+    }
+  }
+  return set;
+}
+;
+  algorithms.push({
+    fn,
+  });
+
+  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
   for (let i = 0; i < n - 1; ++i) {
     for (let j = 0; j < n - i - 1; ++j) {
@@ -302,18 +429,62 @@ const algorithms = [];
   });
 
 
+const sets = []
+
+  sets.push({
+    generator: 'random',
+  });
+
+  sets.push({
+    generator: 'random',
+  });
+
+
+function render({ compare, swap, set, chart }, value, done, repaint) {
+  if (repaint) {
+    chart.repaint(set);
+    return;
+  }
+  const { last } = compare;
+  chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
+}
+
 const visualizations = new Visualizations({ render });
 const fps = false;
 const max = 100;
 
-function getSet() {
-  const set = [];
-  for (let i = 1; i <= max; ++i) {
-    set.push(i);
-  }
-  shuffle(set);
-  return set;
+function createVisualisations({ targets, algorithms, sets }) {
+  sets.forEach((setDef, i) => {
+    const set = getSet[setDef.generator]();
+    algorithms.forEach((algorithm, j) => {
+      visualizations.add({
+        generatorFunction: algorithms[j].fn,
+        set: set.slice(),
+        chart: {
+          $el: targets[j][i],
+          n: set.length,
+          max,
+          height: 100,
+          width: 200,
+        },
+      });
+    });
+  });
+
+  visualizations.renderAll(true);
+  iterate();
 }
+
+const getSet = {
+  random() {
+    const set = [];
+    for (let i = 1; i <= max; ++i) {
+      set.push(i);
+    }
+    shuffle(set);
+    return set;
+  }
+};
 
 function iterate() {
   if (visualizations.allDone) return;
@@ -335,24 +506,21 @@ vueApp = {
       message: 'loaded',
     };
   },
+  methods: {
+    createTargets() {
+      const targets = [];
+      for (let i = 0; i < algorithms.length; ++i) {
+        targets.push([]);
+        for (let j = 0; j < sets.length; ++j) {
+          targets[i].push(this.$refs[`canvas-${i}-${j}`][0]);
+        }
+      }
+      return targets;
+    },
+  },
   mounted() {
-    console.log(algorithms);
-    for (let i = 0; i < 1; i++) {
-      const set = getSet();
-      visualizations.add({
-        generatorFunction: algorithms[0].fn,
-        set,
-        chart: {
-          $el: this.$refs['canvas-target'],
-          n: set.length,
-          max,
-          height: 100,
-          width: 200,
-        },
-      });
-    }
-    visualizations.renderAll(true);
-    iterate();
+    const targets = this.createTargets();
+    createVisualisations({ targets, algorithms, sets });
   }, // mounted()
 }
 </script>

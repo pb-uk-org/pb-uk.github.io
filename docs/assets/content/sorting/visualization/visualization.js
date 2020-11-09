@@ -84,7 +84,14 @@ class Visualizations {
     });
   }
 
-  render() {} // ({ compare, swap, set }, value, done, repaint) {
+  render({ compare, swap, set, chart }, value, done, repaint) {
+    if (repaint) {
+      chart.repaint(set);
+      return;
+    }
+    const { last } = compare;
+    chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
+  }
 
   step() {
     if (this.allDone) return;

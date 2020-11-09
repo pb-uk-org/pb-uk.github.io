@@ -12,6 +12,23 @@ hasVue: true
 algorithms:
   -
     file: ./_improved-bubble-sort-generator.js
+  -
+    file: ./_improved-bubble-sort-generator.js
+  -
+    file: ./_improved-bubble-sort-generator.js
+  -
+    file: ./_improved-bubble-sort-generator.js
+  -
+    file: ./_improved-bubble-sort-generator.js
+  -
+    file: ./_improved-bubble-sort-generator.js
+  -
+    file: ./_improved-bubble-sort-generator.js
+  -
+    file: ./_improved-bubble-sort-generator.js
+sets:
+  - random
+  - random
 ---
 
 <h1>{{ title }}</h1>
@@ -24,16 +41,36 @@ algorithms:
 {{ message }}
 <div>
   {{ title }}
-  <div ref="canvas-target"></div>
+  <div v-for="(algorithm, i) in algorithms">
+    <div v-for="(set, j) in sets">
+      algorithm: {{ i }} set {{ j }}
+      <div v-bind:ref="`canvas-${i}-${j}`"></div>
+    </div>
+  </div>
 </div>
 </div>
-</script>
-
-<script type="text/x-template" id="vis-template">
 </script>
 {% endraw %}
 
 <script>
+
+{% include './_visualization.js' %};
+
+const algorithms = [];
+let fn;
+{% for algorithm in algorithms %}
+  fn = {% include algorithm.file %};
+  algorithms.push({
+    fn,
+  });
+{% endfor %}
+
+const sets = []
+{% for set in sets %}
+  sets.push({
+    generator: '{{ set }}',
+  });
+{% endfor %}
 
 function render({ compare, swap, set, chart }, value, done, repaint) {
   if (repaint) {
@@ -44,28 +81,42 @@ function render({ compare, swap, set, chart }, value, done, repaint) {
   chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
 }
 
-{% include './_visualization.js' %};
-
-const algorithms = [];
-{% for algorithm in algorithms %}
-  const fn = {% include algorithm.file %};
-  algorithms.push({
-    fn,
-  });
-{% endfor %}
-
 const visualizations = new Visualizations({ render });
 const fps = false;
 const max = 100;
 
-function getSet() {
-  const set = [];
-  for (let i = 1; i <= max; ++i) {
-    set.push(i);
-  }
-  shuffle(set);
-  return set;
+function createVisualisations({ targets, algorithms, sets }) {
+  sets.forEach((setDef, i) => {
+    const set = getSet[setDef.generator]();
+    algorithms.forEach((algorithm, j) => {
+      visualizations.add({
+        generatorFunction: algorithms[j].fn,
+        set: set.slice(),
+        chart: {
+          $el: targets[j][i],
+          n: set.length,
+          max,
+          height: 100,
+          width: 200,
+        },
+      });
+    });
+  });
+
+  visualizations.renderAll(true);
+  iterate();
 }
+
+const getSet = {
+  random() {
+    const set = [];
+    for (let i = 1; i <= max; ++i) {
+      set.push(i);
+    }
+    shuffle(set);
+    return set;
+  }
+};
 
 function iterate() {
   if (visualizations.allDone) return;
@@ -87,24 +138,21 @@ vueApp = {
       message: 'loaded',
     };
   },
+  methods: {
+    createTargets() {
+      const targets = [];
+      for (let i = 0; i < algorithms.length; ++i) {
+        targets.push([]);
+        for (let j = 0; j < sets.length; ++j) {
+          targets[i].push(this.$refs[`canvas-${i}-${j}`][0]);
+        }
+      }
+      return targets;
+    },
+  },
   mounted() {
-    console.log(algorithms);
-    for (let i = 0; i < 1; i++) {
-      const set = getSet();
-      visualizations.add({
-        generatorFunction: algorithms[0].fn,
-        set,
-        chart: {
-          $el: this.$refs['canvas-target'],
-          n: set.length,
-          max,
-          height: 100,
-          width: 200,
-        },
-      });
-    }
-    visualizations.renderAll(true);
-    iterate();
+    const targets = this.createTargets();
+    createVisualisations({ targets, algorithms, sets });
   }, // mounted()
 }
 </script>
