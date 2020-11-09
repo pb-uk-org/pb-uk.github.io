@@ -15,36 +15,9 @@ eleventyComputed:
   title: Tagged “{{ tag }}”
 permalink: /tags/{{ tag }}/
 ---
-<div class="my-3">
-  <h1 class="title">Tagged “{{ tag }}”</h1>
+<h1>Tagged “{{ tag }}”</h1>
 
-  {# Display the tag's subtitle (in HTML) if there is any. #}
-  {% if tagmeta[tag].subtitle %}
-  <div class="subtitle">{{ tagmeta[tag].subtitle | safe }}</div>
-  {% endif %}
-</div>
+{% set postslist = collections[ tag ] %}
+{% include "postslist.njk" %}
 
-{# Display extended information about the tag (in HTML) if there is any. #}
-{% if tagmeta[tag].long %}
-<main class="content">{{ tagmeta[tag].long | safe }}</main>
-{% endif %}
-
-{# Display articles if there are any. #}
-{% set postslist = collections[ tag ] | hasTag('pages') %}
-{% if postslist.length %}
-<div class="my-5">
-  <h2 class="title is-4 mb-1">Articles</h2>
-  {% include "pageslist.njk" %}
-</div>
-{% endif %}
-
-{# Display blog posts if there are any. #}
-{% set postslist = collections[ tag ] | hasTag('posts') %}
-{% if postslist.length %}
-<div class="my-5">
-  <h2 class="title is-4 mb-1">Blog posts</h2>
-  {% include "postslist.njk" %}
-</div>
-{% endif %}
-
-<p class="is-size-4 has-text-weight-bold my-5"><a href="{{ '/tags/' | url }}">See all tags</a></p>
+<p>See <a href="{{ '/tags/' | url }}">all tags</a>.</p>
