@@ -50,7 +50,11 @@ sets:
         <h3>{{ algorithm.name }}</h3>
       </div>
       <div v-for="(set, j) in sets" class="column">
-        <h4>{{ set.name }}</h4>
+        <h4 class="my-0">{{ set.name }}</h4>
+        <div v-if="logData">
+          Compares: {{ logData[`${i}-${j}`].compares }}
+          swaps: {{ logData[`${i}-${j}`].swaps }}
+        </div>
         <div v-bind:ref="`canvas-${i}-${j}`"></div>
       </div>
     </div>
@@ -91,18 +95,17 @@ function render({ compare, swap, set, chart, id }, value, done, repaint) {
   this.log(id, { compare, swap});
 }
 
-const log = () => {};
-const visualizations = new Visualizations({ render, log });
-
-const fps = false;
 const max = 100;
 
 function createVisualisations({ targets, algorithms, sets }) {
+  const logData = {};
   sets.forEach((setDef, i) => {
     const set = getSet[setDef.generator]();
     algorithms.forEach((algorithm, j) => {
-      visualizations.add({
-        id: `${j}-${i}`,
+      const id = `${j}-${i}`;
+      logData[id] = { compares: null, swaps: null };
+      this.visualizations.add({
+        id,
         generatorFunction: algorithms[j].fn,
         set: set.slice(),
         chart: {
@@ -114,10 +117,8 @@ function createVisualisations({ targets, algorithms, sets }) {
         },
       });
     });
+    this.logData = logData;
   });
-
-  visualizations.renderAll(true);
-  iterate();
 }
 
 const getSet = {
@@ -146,17 +147,6 @@ const getSet = {
   },
 };
 
-function iterate() {
-  if (visualizations.allDone) return;
-  visualizations.step();
-  if (visualizations.allDone) {
-    setTimeout(() => {
-      visualizations.renderAll(true);
-    }, fps === false ? 0 : 1000 / fps);
-  };
-  setTimeout(iterate, fps === false ? 0 : 1000 / fps);
-}
-
 vueApp = {
   el: '#app',
   template: '#app-template',
@@ -167,6 +157,7 @@ vueApp = {
       message: 'loaded',
       compares: {},
       swaps: {},
+      logData: null,
     };
   },
   methods: {
@@ -181,9 +172,11 @@ vueApp = {
       return targets;
     }, // createTargets()
 
+    createVisualisations,
+
     log(id, data) {
-      this.compares[id] = data.compare.count;
-      this.swaps[id] = data.swap.count;
+      this.logData[id].compares = data.compare.count;
+      this.logData[id].swaps = data.swap.count;
     }, // log()
   },
   mounted() {
@@ -191,7 +184,10 @@ vueApp = {
     const log = (id, data) => {
       this.log(id, data);
     };
-    createVisualisations({ targets, algorithms, sets, log });
+    this.visualizations = new Visualizations({ render, log });
+    this.createVisualisations({ targets, algorithms, sets });
+    this.visualizations.renderAll(true);
+    this.visualizations.iterate();
   }, // mounted()
 }
 </script>

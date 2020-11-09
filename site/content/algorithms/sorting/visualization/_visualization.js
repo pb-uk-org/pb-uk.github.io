@@ -1,18 +1,27 @@
-
+/* eslint-env browser */
 
 class Chart {
   constructor({ $el, n, max, height, width }) {
-    // const $el = document.querySelector(el);
-    this.height = height;
-    this.width = width; 
-    $el.innerHTML = `<canvas width="${width}" height="${height}"></canvas>`;
+    // Set the dimensions for the canvas.
+    // These are fixed as integer multiples of n so it looks good.
     this.n = n;
     this.max = max;
+    this.xScale = Math.floor(width / n);
+    this.yScale = Math.floor(height / max);
+
+    this.width = this.xScale * n;
+    this.height = this.yScale * max;
+
+    $el.innerHTML = `<canvas width="${this.width}" height="${this.height}"></canvas>`;
     this.ctx = $el.firstChild.getContext('2d');
  
-    this.xScale = Math.floor(this.width / n);
-    this.yScale = this.height / max;
     this.last = false;
+    this.colours = {
+      background: '#efefef',
+      normal: '#afafaf',
+      swap: '#9f0000',
+      compare: '#007f00',
+    };
   }
 
   draw(aIndex, aValue, bIndex, bValue, swap) {
@@ -22,16 +31,16 @@ class Chart {
       const [ai, av, bi, bv, sw] = this.last;
       if (sw > 0) {
         // They were swapped so paint out the old positions.
-        this.ctx.fillStyle = 'white';
+        this.ctx.fillStyle = this.colours.background;
         this.ctx.fillRect(ai * xScale, height - av * yScale, xScale, height);
         this.ctx.fillRect(bi * xScale, height - bv * yScale, xScale, height);
         // Paint the new positions in in grey.
-        this.ctx.fillStyle = 'grey';
+        this.ctx.fillStyle = this.colours.normal;
         this.ctx.fillRect(ai * xScale, height - bv * yScale, xScale, height);
         this.ctx.fillRect(bi * xScale, height - av * yScale, xScale, height);
       } else {
         // They were not swapped so just repaint in grey.
-        this.ctx.fillStyle = 'grey';
+        this.ctx.fillStyle = this.colours.normal;
         this.ctx.fillRect(ai * xScale, height - av * yScale, xScale, height);
         this.ctx.fillRect(bi * xScale, height - bv * yScale, xScale, height);
       }
@@ -39,12 +48,12 @@ class Chart {
 
     if (swap > 0) {
       // They will be swapped so repaint in red.
-      this.ctx.fillStyle = 'red';
+      this.ctx.fillStyle = this.colours.swap;
       this.ctx.fillRect(aIndex * xScale, height - aValue * yScale, xScale, height);
       this.ctx.fillRect(bIndex * xScale, height - bValue * yScale, xScale, height);
     } else {
       // They are not going to be swapped so repaint in green.
-      this.ctx.fillStyle = 'green';
+      this.ctx.fillStyle = this.colours.compare;
       this.ctx.fillRect(aIndex * xScale, height - aValue * yScale, xScale, height);
       this.ctx.fillRect(bIndex * xScale, height - bValue * yScale, xScale, height);
     }
@@ -57,10 +66,10 @@ class Chart {
     const { xScale, yScale, height, width } = this;
 
     // Paint out everything.
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = this.colours.background;
     this.ctx.fillRect(0, 0, width, height);
 
-    this.ctx.fillStyle = 'grey';
+    this.ctx.fillStyle = this.colours.normal;
     set.forEach((value, i) => {
       // Paint the new positions in in grey.
       this.ctx.fillRect(i * xScale, height - value * yScale, xScale, height);
@@ -68,16 +77,21 @@ class Chart {
   }
 }
 
+/* eslint-disable-next-line no-unused-vars*/
 class Visualizations {
-  constructor({ render, log }) {
+  constructor({ render, log, fps }) {
     this.allDone = false;
+    this.fps = fps != null ? fps : false;
     this.visualizations = [];
     this.log = log;
     if (render) this.render = render;
   }
 
   add(options) {
-    this.visualizations.push(new Visualization(options));
+    this.visualizations.push(new Visualization({
+      log: this.log,
+      ...options,
+    }));
   }
 
   renderAll(repaint) {
@@ -101,6 +115,17 @@ class Visualizations {
     });
     this.allDone = allDone;
   }
+
+  iterate() {
+    if (this.allDone) return;
+    this.step();
+    if (this.allDone) {
+      setTimeout(() => {
+        this.renderAll(true);
+      }, this.fps === false ? 0 : 1000 / this.fps);
+    }
+    setTimeout(() => this.iterate(), this.fps === false ? 0 : 1000 / this.fps);
+  }
 }
 
 class Visualization {
@@ -109,7 +134,9 @@ class Visualization {
     render,
     set,
     chart,
+    id,
   }) {
+    this.id = id;
     this.compare = new Compare();
     this.swap = new Swap();
     this.render = render;
@@ -162,6 +189,7 @@ class Swap {
   }
 }
 
+/* eslint-disable-next-line no-unused-vars*/
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
 
