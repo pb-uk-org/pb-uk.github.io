@@ -19,4 +19,3 @@ This section contains [information about this website](/about/).
 Computational algorithms in the following sections:
 
 - [Sorting](/algorithms/sorting/)
-

@@ -97,7 +97,8 @@ a[href].direct-link:focus:visited,
 }
 
 /* Fix bulma/prism confilct. */
-.content .tag, .content .number {
+.content .tag,
+.content .number {
   display: inline;
   padding: inherit;
   font-size: inherit;
