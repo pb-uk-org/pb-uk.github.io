@@ -13,11 +13,12 @@
 	</author>
 	
 	<entry>
-		<title>Coming soon!</title>
-		<link href="https://pb-uk.github.io/posts/firstpost/"/>
+		<title>Coming soon</title>
+		<link href="https://pb-uk.github.io/blog/coming-soon/"/>
 		<updated>2020-11-05T00:00:00+00:00</updated>
-		<id>https://pb-uk.github.io/posts/firstpost/</id>
-		<content type="html">&lt;p&gt;Coming soon!&lt;/p&gt;
+		<id>https://pb-uk.github.io/blog/coming-soon/</id>
+		<content type="html">&lt;h1 id=&quot;coming-soon&quot;&gt;Coming soon &lt;a class=&quot;direct-link&quot; href=&quot;#coming-soon&quot;&gt;#&lt;/a&gt;&lt;/h1&gt;
+&lt;p&gt;This site is not yet ready, please come back later.&lt;/p&gt;
 </content>
 	</entry>
 </feed>
