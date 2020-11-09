@@ -8,6 +8,9 @@ title: Visualizing sorting algorithms
 tags:
   - pages
   - code
+canvas:
+  width: 320
+  height: 180
 ---
 # {{ title }}
 
@@ -18,7 +21,52 @@ This is where my app goes.
 </div>
 {% endraw %}
 
-<canvas id="canvas-01" width="200" height="100"></canvas>
+{% include _sorter-card.njk %}
+
+<div>
+  <canvas id="canvas-1" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-2" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-3" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-4" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-5" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-6" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-7" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-8" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-9" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-10" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
+<div>
+  <canvas id="canvas-11" width="{{ canvas.width }}" height="200"></canvas>
+</div>
+
 
 <script>
 
@@ -27,8 +75,8 @@ function render({ compare, swap, set, chart }, value, done, repaint) {
     chart.repaint(set);
     return;
   }
-  console.log(set, value, done, repaint);
-  const { last } = swap;
+  const { last } = compare;
+  console.log(last);
   chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
 }
 
@@ -38,18 +86,31 @@ let fn =
 {% include _improved-bubble-sort-generator.js %};
 
 const visualizations = new Visualizations({ render });
+const fps = false;
+const max = 100;
 
-const set = [5, 4, 3, 2, 1];
+function getSet() {
+  const set = [];
+  for (let i = 1; i <= max; ++i) {
+    set.push(i);
+  }
+  shuffle(set);
+  return set;
+}
 
-visualizations.add({
-  generatorFunction: fn,
-  set,
-  chart: {
-    el: '#canvas-01',
-    n: set.length,
-    max: 5,
-  },
-});
+for (let i = 0; i < 10; i++) {
+  const set = getSet();
+  console.log(set);
+  visualizations.add({
+    generatorFunction: fn,
+    set,
+    chart: {
+      el: `#canvas-${i}`,
+      n: set.length,
+      max,
+    },
+  });
+}
 
 function iterate() {
   if (visualizations.allDone) return;
@@ -57,9 +118,9 @@ function iterate() {
   if (visualizations.allDone) {
     setTimeout(() => {
       visualizations.renderAll(true);
-    }, 100);
+    }, fps === false ? 0 : 1000 / fps);
   };
-  setTimeout(iterate, 100);
+  setTimeout(iterate, fps === false ? 0 : 1000 / fps);
 }
 
 visualizations.renderAll(true);

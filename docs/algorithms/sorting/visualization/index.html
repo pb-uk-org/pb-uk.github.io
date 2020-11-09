@@ -67,7 +67,52 @@
 <div id="app">
 <div>{{ message }}</div>
 </div>
-<p><canvas id="canvas-01" width="200" height="100"></canvas></p>
+<div class="card">
+  <div class="card-content">
+    <canvas id="canvas-0" width="canvas.width" height="canvas.height"></canvas>
+  </div>
+  <div class="card-content">
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      Phasellus nec iaculis mauris. <a>@bulmaio</a>.
+      <a href="#">#css</a> <a href="#">#responsive</a>
+      <br>
+      <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+    </div>
+</div>
+<div>
+  <canvas id="canvas-1" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-2" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-3" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-4" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-5" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-6" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-7" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-8" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-9" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-10" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-11" width="320" height="200"></canvas>
+</div>
 <script>
 
 function render({ compare, swap, set, chart }, value, done, repaint) {
@@ -75,8 +120,8 @@ function render({ compare, swap, set, chart }, value, done, repaint) {
     chart.repaint(set);
     return;
   }
-  console.log(set, value, done, repaint);
-  const { last } = swap;
+  const { last } = compare;
+  console.log(last);
   chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
 }
 
@@ -84,6 +129,7 @@ function render({ compare, swap, set, chart }, value, done, repaint) {
 
 class Chart {
   constructor({ el, n, max }) {
+    console.log(el);
     const $el = document.querySelector(el);
     this.n = n;
     this.max = max;
@@ -135,7 +181,6 @@ class Chart {
   }
 
   repaint(set) {
-    console.log('repainting');
     const { xScale, yScale, height, width } = this;
 
     // Paint out everything.
@@ -167,9 +212,7 @@ class Visualizations {
     });
   }
 
-  render({ compare, swap, set }, value, done, repaint) {
-    console.log(done || false, value || set, compare.last, compare.count, swap.count);
-  }
+  render() {} // ({ compare, swap, set }, value, done, repaint) {
 
   step() {
     if (this.allDone) return;
@@ -243,6 +286,25 @@ class Swap {
     this.swap = swap.bind(this);
   }
 }
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
 ;
 
 let fn =
@@ -286,18 +348,31 @@ function* improvedBubbleSortGenerator(set, { compare, swap }) {
 ;
 
 const visualizations = new Visualizations({ render });
+const fps = false;
+const max = 100;
 
-const set = [5, 4, 3, 2, 1];
+function getSet() {
+  const set = [];
+  for (let i = 1; i <= max; ++i) {
+    set.push(i);
+  }
+  shuffle(set);
+  return set;
+}
 
-visualizations.add({
-  generatorFunction: fn,
-  set,
-  chart: {
-    el: '#canvas-01',
-    n: set.length,
-    max: 5,
-  },
-});
+for (let i = 0; i < 10; i++) {
+  const set = getSet();
+  console.log(set);
+  visualizations.add({
+    generatorFunction: fn,
+    set,
+    chart: {
+      el: `#canvas-${i}`,
+      n: set.length,
+      max,
+    },
+  });
+}
 
 function iterate() {
   if (visualizations.allDone) return;
@@ -305,9 +380,9 @@ function iterate() {
   if (visualizations.allDone) {
     setTimeout(() => {
       visualizations.renderAll(true);
-    }, 100);
+    }, fps === false ? 0 : 1000 / fps);
   };
-  setTimeout(iterate, 100);
+  setTimeout(iterate, fps === false ? 0 : 1000 / fps);
 }
 
 visualizations.renderAll(true);

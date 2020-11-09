@@ -2,6 +2,7 @@
 
 class Chart {
   constructor({ el, n, max }) {
+    console.log(el);
     const $el = document.querySelector(el);
     this.n = n;
     this.max = max;
@@ -53,7 +54,6 @@ class Chart {
   }
 
   repaint(set) {
-    console.log('repainting');
     const { xScale, yScale, height, width } = this;
 
     // Paint out everything.
@@ -85,9 +85,7 @@ class Visualizations {
     });
   }
 
-  render({ compare, swap, set }, value, done, repaint) {
-    console.log(done || false, value || set, compare.last, compare.count, swap.count);
-  }
+  render() {} // ({ compare, swap, set }, value, done, repaint) {
 
   step() {
     if (this.allDone) return;
@@ -160,4 +158,23 @@ class Swap {
     }
     this.swap = swap.bind(this);
   }
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
