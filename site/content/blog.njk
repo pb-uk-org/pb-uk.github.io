@@ -1,0 +1,19 @@
+---
+layout: home.njk
+permalink: /blog/
+eleventyNavigation:
+  key: Blog
+  order: 30
+---
+
+<div class="my-3">
+  <h1 class="title">Blog posts</h1>
+</div>
+
+{# Display blog posts if there are any. #}
+{% set postslist = collections.posts %}
+{% if postslist.length %}
+<div class="my-5">
+  {% include "postslist.njk" %}
+</div>
+{% endif %}

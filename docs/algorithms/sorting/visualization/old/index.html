@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Old visualizing sorting algorithms</title>
+    <meta name="description" content="Paul&#39;s home page miscellany.">
+
+    <link rel="stylesheet" href="/assets/css/prism/prism-solarizedlight.css">
+    <link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="PB UK">
+    <link rel="alternate" href="/feed/feed.json" type="application/json" title="PB UK">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/buefy/dist/buefy.min.css">
+    <!-- link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9/css/bulma.css" -->
+
+
+
+    <link rel="stylesheet" href="/assets/css/index.css">
+
+  </head>
+  <body>
+    
+    
+
+<nav role="navigation" aria-label="main navigation" class="navbar is-primary">
+  <div class="container">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">PB UK</a>
+      <a class="navbar-item" href="/articles/">Articles</a>
+      <a class="navbar-item" href="/blog/">Blog</a>
+      <a class="navbar-item" href="/tags/">Tags</a>
+      <a class="navbar-item" href="/about/">About</a>
+
+    </div>
+  </div>
+</nav>
+
+
+    <section class="section py-0">
+      <div class="container">
+        
+<nav class="breadcrumb my-3 is-size-7" aria-label="breadcrumbs">
+  <ul>
+
+  
+    
+      <li>In <a class="px-1" href="/algorithms/">algorithms</a></li>
+    
+  
+
+  
+    
+      <li><a class="px-1" href="/algorithms/sorting/">sorting</a></li>
+    
+  
+
+  
+    
+      <li><a class="px-1" href="/algorithms/sorting/visualization/">visualization</a></li>
+    
+  
+
+  
+    
+  
+
+  </ul>
+</nav>
+
+<main class="content">
+<h1 id="old-visualizing-sorting-algorithms">Old visualizing sorting algorithms <a class="direct-link" href="#old-visualizing-sorting-algorithms">#</a></h1>
+<p>This is where my app goes.</p>
+<div id="app">
+<div>{{ message }}</div>
+</div>
+<div class="card">
+  <div class="card-content">
+    <canvas id="canvas-0" data-width="canvas.width" data-height="canvas.height"></canvas>
+  </div>
+  <div class="card-content">
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      Phasellus nec iaculis mauris. <a>@bulmaio</a>.
+      <a href="#">#css</a> <a href="#">#responsive</a>
+      <br>
+      <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+    </div>
+</div>
+<div>
+  <canvas id="canvas-1" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-2" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-3" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-4" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-5" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-6" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-7" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-8" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-9" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-10" width="320" height="200"></canvas>
+</div>
+<div>
+  <canvas id="canvas-11" width="320" height="200"></canvas>
+</div>
+<script>
+
+function render({ compare, swap, set, chart }, value, done, repaint) {
+  if (repaint) {
+    chart.repaint(set);
+    return;
+  }
+  const { last } = compare;
+  console.log(last);
+  chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
+}
+
+/* eslint-env browser */
+
+class Chart {
+  constructor({ $el, n, max, height, width }) {
+    // Set the dimensions for the canvas.
+    // These are fixed as integer multiples of n so it looks good.
+    this.n = n;
+    this.max = max;
+    this.xScale = Math.floor(width / n);
+    this.yScale = Math.floor(height / max);
+
+    this.width = this.xScale * n;
+    this.height = this.yScale * max;
+
+    $el.innerHTML = `<canvas width="${this.width}" height="${this.height}"></canvas>`;
+    this.ctx = $el.firstChild.getContext('2d');
+ 
+    this.last = false;
+    this.colours = {
+      background: '#efefef',
+      normal: '#afafaf',
+      swap: '#9f0000',
+      compare: '#007f00',
+    };
+  }
+
+  draw(aIndex, aValue, bIndex, bValue, swap) {
+    const { xScale, yScale, height } = this;
+
+    if (this.last) {
+      const [ai, av, bi, bv, sw] = this.last;
+      if (sw > 0) {
+        // They were swapped so paint out the old positions.
+        this.ctx.fillStyle = this.colours.background;
+        this.ctx.fillRect(ai * xScale, height - av * yScale, xScale, height);
+        this.ctx.fillRect(bi * xScale, height - bv * yScale, xScale, height);
+        // Paint the new positions in in grey.
+        this.ctx.fillStyle = this.colours.normal;
+        this.ctx.fillRect(ai * xScale, height - bv * yScale, xScale, height);
+        this.ctx.fillRect(bi * xScale, height - av * yScale, xScale, height);
+      } else {
+        // They were not swapped so just repaint in grey.
+        this.ctx.fillStyle = this.colours.normal;
+        this.ctx.fillRect(ai * xScale, height - av * yScale, xScale, height);
+        this.ctx.fillRect(bi * xScale, height - bv * yScale, xScale, height);
+      }
+    }
+
+    if (swap > 0) {
+      // They will be swapped so repaint in red.
+      this.ctx.fillStyle = this.colours.swap;
+      this.ctx.fillRect(aIndex * xScale, height - aValue * yScale, xScale, height);
+      this.ctx.fillRect(bIndex * xScale, height - bValue * yScale, xScale, height);
+    } else {
+      // They are not going to be swapped so repaint in green.
+      this.ctx.fillStyle = this.colours.compare;
+      this.ctx.fillRect(aIndex * xScale, height - aValue * yScale, xScale, height);
+      this.ctx.fillRect(bIndex * xScale, height - bValue * yScale, xScale, height);
+    }
+
+    // Remember what we did for next time.
+    this.last = [ aIndex, aValue, bIndex, bValue, swap ];
+  }
+
+  repaint(set) {
+    const { xScale, yScale, height, width } = this;
+
+    // Paint out everything.
+    this.ctx.fillStyle = this.colours.background;
+    this.ctx.fillRect(0, 0, width, height);
+
+    this.ctx.fillStyle = this.colours.normal;
+    set.forEach((value, i) => {
+      // Paint the new positions in in grey.
+      this.ctx.fillRect(i * xScale, height - value * yScale, xScale, height);
+    });
+  }
+}
+
+/* eslint-disable-next-line no-unused-vars*/
+class Visualizations {
+  constructor({ render, log, fps }) {
+    this.allDone = false;
+    this.fps = fps != null ? fps : false;
+    this.visualizations = [];
+    this.log = log;
+    if (render) this.render = render;
+  }
+
+  add(options) {
+    this.visualizations.push(new Visualization({
+      log: this.log,
+      ...options,
+    }));
+  }
+
+  renderAll(repaint) {
+    this.visualizations.forEach(vis => {
+      this.render(vis, vis.set, vis.isDone, repaint);
+      this.log(vis.id, vis);
+    });
+  }
+
+  render() {} // ({ compare, swap, set }, value, done, repaint) {
+
+  step() {
+    if (this.allDone) return;
+    let allDone = true;
+    this.visualizations.forEach(vis => {
+      if (vis.isDone) return;
+      const { done, value } = vis.next();
+      vis.isDone = done;
+      this.render(vis, value, done);
+      allDone &= done;
+    });
+    this.allDone = allDone;
+  }
+
+  iterate() {
+    if (this.allDone) return;
+    this.step();
+    if (this.allDone) {
+      setTimeout(() => {
+        this.renderAll(true);
+      }, this.fps === false ? 0 : 1000 / this.fps);
+    }
+    setTimeout(() => this.iterate(), this.fps === false ? 0 : 1000 / this.fps);
+  }
+}
+
+class Visualization {
+  constructor({
+    generatorFunction,
+    render,
+    set,
+    chart,
+    id,
+  }) {
+    this.id = id;
+    this.compare = new Compare();
+    this.swap = new Swap();
+    this.render = render;
+    this.set = set;
+    this.chart = new Chart(chart);
+
+    // The visualisation is a generator function.
+    this.generator = generatorFunction(set, {
+      compare: this.compare.compare,
+      swap: this.swap.swap,
+    });
+
+    this.algorithm = 'Improved bubble sort';
+    this.initial = 'Reversed';
+  }
+
+  next() {
+    return this.generator.next();
+  }
+}
+
+class Compare {
+  constructor() {
+    this.count = 0;
+    this.last = [null, null, null];
+
+    function compare(set, a, b) {
+      ++this.count;
+      const result = set[a] > set[b] ? 1 : (set[a] < set[b] ? -1 : 0);
+      this.last = [a, b, result];
+      return result;
+    }
+    this.compare = compare.bind(this);
+  }
+}
+
+class Swap {
+  constructor() {
+    this.count = 0;
+    this.last = [null, null];
+
+    function swap(set, a, b) {
+      ++this.count;
+      this.last = [a, b];
+      const temp = set[a];
+      set[a] = set[b];
+      set[b] = temp;
+    }
+    this.swap = swap.bind(this);
+  }
+}
+
+/* eslint-disable-next-line no-unused-vars*/
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+;
+
+let fn =
+// Bubble sort see pbuk.uk/algorithms/sorting/visualization
+function* bubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  // Start comparing at the end for better performance when nearly sorted.
+  for (let i = n - 1; i > 0; --i) {
+    // Bubble towards the start.
+    for (let j = n - 1; j > n - i - 1; --j) {
+      if (compare(set, j - 1, j) > 0) {
+        yield set;
+        swap(set, j - 1, j);
+      } else {
+        yield set;
+      }
+    }
+    // The (n - i - 1)'th element is now correct.
+  }
+  return set;
+}
+;
+
+const visualizations = new Visualizations({ render });
+const fps = false;
+const max = 100;
+
+function getSet() {
+  const set = [];
+  for (let i = 1; i <= max; ++i) {
+    set.push(i);
+  }
+  shuffle(set);
+  return set;
+}
+
+for (let i = 0; i < 10; i++) {
+  const set = getSet();
+  console.log(set);
+  visualizations.add({
+    generatorFunction: fn,
+    set,
+    chart: {
+      el: `#canvas-${i}`,
+      n: set.length,
+      max,
+    },
+  });
+}
+
+function iterate() {
+  if (visualizations.allDone) return;
+  visualizations.step();
+  if (visualizations.allDone) {
+    setTimeout(() => {
+      visualizations.renderAll(true);
+    }, fps === false ? 0 : 1000 / fps);
+  };
+  setTimeout(iterate, fps === false ? 0 : 1000 / fps);
+}
+
+visualizations.renderAll(true);
+iterate();
+
+</script>
+<p>s</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// Bubble sort see pbuk.uk/algorithms/sorting/visualization</span><br><span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">bubbleSortGenerator</span><span class="token punctuation">(</span><span class="token parameter">set<span class="token punctuation">,</span> <span class="token punctuation">{</span> compare<span class="token punctuation">,</span> swap <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">let</span> n <span class="token operator">=</span> set<span class="token punctuation">.</span>length<span class="token punctuation">;</span><br>  <span class="token comment">// Start comparing at the end for better performance when nearly sorted.</span><br>  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token operator">--</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token comment">// Bubble towards the start.</span><br>    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">></span> n <span class="token operator">-</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">--</span>j<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compare</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> j<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>        <span class="token function">swap</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> j<span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br>    <span class="token comment">// The (n - i - 1)'th element is now correct.</span><br>  <span class="token punctuation">}</span><br>  <span class="token keyword">return</span> set<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br></code></pre>
+
+</main>
+<hr>
+<div class="columns pb-5">
+  <div class="column is-size-7 py-0">Previous: <a href="/algorithms/number-theory/">Number theory</a>
+  </div>
+  <div class="column has-text-right is-size-7 py-0">Next: <a href="/algorithms/sorting/visualization/">Visualizing sorting algorithms</a>
+  </div>
+</div>
+
+      </div>
+    </section>
+
+    <footer
+      class="footer has-text-centered is-size-7 py-1"
+      ><a href="/about/#copyright">Copyright © 2020 PBUK</a></footer>
+
+    <!-- Current page: /algorithms/sorting/visualization/old/ -->
+  </body>
+</html>

@@ -7,8 +7,10 @@ module.exports = (eleventyConfig) => {
   /* Markdown Overrides */
   let markdownLibrary = markdownIt({
     html: true,
-    breaks: true,
+    breaks: false,
     linkify: true,
+    typographer: true,
+    quotes: '“”‘’',
   }).use(markdownItAnchor, {
     permalink: true,
     permalinkClass: 'direct-link',

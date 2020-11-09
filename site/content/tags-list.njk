@@ -1,10 +1,19 @@
 ---
 permalink: /tags/
 layout: home.njk
+eleventyNavigation:
+   key: Tags
+   order: 40
 ---
 <h1>Tags</h1>
 
+<ul>
 {% for tag in collections.tagList %}
   {% set tagUrl %}/tags/{{ tag }}/{% endset %}
-  <a href="{{ tagUrl | url }}" class="post-tag">{{ tag }}</a>
+  <li>
+    <a href="{{ tagUrl | url }}" class="{{ site.tagClass }}">{{ tag }}</a>
+    {{ tagmeta[tag].description | safe }}
+    ({{ collections[tag].length }})
+  </li>
 {% endfor %}
+</ul>

@@ -1,0 +1,208 @@
+---
+layout: page
+title: Visualizing sorting algorithms
+# templateClass: tmpl-post
+# eleventyNavigation:
+#   key: About
+#   order: 3
+tags:
+  - pages
+  - code
+hasVue: true
+algorithms:
+  -
+    name: Bubble sort
+    file: ./_bubble-sort-generator.js
+  -
+    name: Quicksort
+    file: ./_quicksort-generator.js
+  -
+    name: Improved bubble sort 3
+    file: ./_bubble-sort-generator.js
+  -
+    name: Improved bubble sort 4
+    file: ./_bubble-sort-generator.js
+sets:
+  - 
+    name: Random
+    generator: random
+  - 
+    name: Nearly sorted
+    generator: nearlySorted
+  - 
+    name: Reversed
+    generator: reversed
+  - 
+    name: Many equal
+    generator: random
+---
+
+<h1>{{ title }}</h1>
+
+<div class="notification is-warning xis-light">
+<h3>Abandoned</h3>
+<p>This page - in fact this whole section - has been abandoned. It needs
+refactoring to cater for quicksort's recursion and to deal with yielding and
+painting after swaps.
+</p>
+</div>
+
+<div id="app"></div>
+
+{% raw %}
+<script type="text/x-template" id="app-template">
+<div>
+  <div>
+    <div v-for="(algorithm, i) in algorithms" class="columns is-multiline">
+      <div class="column is-12 pt-5 pb-0">
+        <h3 class="mb-2">{{ algorithm.name }}</h3>
+      </div>
+      <div v-for="(set, j) in sets" class="column py-0">
+        <h4 class="my-0">{{ set.name }}</h4>
+        <div v-if="logData">
+          Compares: {{ formatInteger(logData[`${i}-${j}`].compares) }}
+          swaps: {{ formatInteger(logData[`${i}-${j}`].swaps) }}
+        </div>
+        <div v-bind:ref="`canvas-${i}-${j}`"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</script>
+{% endraw %}
+
+<script>
+
+{% include './_visualization.js' %};
+
+const algorithms = [];
+let fn;
+{% for algorithm in algorithms %}
+  fn = {% include algorithm.file %};
+  algorithms.push({
+    name: '{{ algorithm.name }}',
+    fn,
+  });
+{% endfor %}
+
+const sets = []
+{% for set in sets %}
+  sets.push({
+    name: '{{ set.name }}',
+    generator: '{{ set.generator }}',
+  });
+{% endfor %}
+
+function render({ compare, swap, set, chart, id }, value, done, repaint) {
+  if (repaint) {
+    chart.repaint(set);
+    return;
+  }
+  const { last } = compare;
+  chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
+  this.log(id, { compare, swap});
+}
+
+const max = 100;
+
+
+const formatter = new Intl.NumberFormat().format;
+
+function createVisualisations({ targets, algorithms, sets }) {
+  const logData = {};
+  sets.forEach((setDef, i) => {
+    const set = getSet[setDef.generator]();
+    algorithms.forEach((algorithm, j) => {
+      const id = `${j}-${i}`;
+      logData[id] = { compares: null, swaps: null };
+      this.visualizations.add({
+        id,
+        generatorFunction: algorithms[j].fn,
+        set: set.slice(),
+        chart: {
+          $el: targets[j][i],
+          n: set.length,
+          max,
+          height: 100,
+          width: 300,
+        },
+      });
+    });
+    this.logData = logData;
+  });
+}
+
+const getSet = {
+  sorted() {
+    const set = [];
+    for (let i = 1; i <= max; ++i) {
+      set.push(i);
+    }
+    return set;
+  },
+  random() {
+    const set = [];
+    for (let i = 1; i <= max; ++i) {
+      set.push(i);
+    }
+    return shuffle(set);
+  },
+  nearlySorted() {
+    const set = this.sorted();
+    const first = set.shift();
+    set.push(first);
+    return set;
+  },
+  reversed() {
+    return this.sorted().reverse();
+  },
+};
+
+vueApp = {
+  el: '#app',
+  template: '#app-template',
+  data() {
+    return {
+      algorithms: algorithms,
+      title: 'My title',
+      message: 'loaded',
+      compares: {},
+      swaps: {},
+      logData: null,
+    };
+  },
+  methods: {
+    createTargets() {
+      const targets = [];
+      for (let i = 0; i < algorithms.length; ++i) {
+        targets.push([]);
+        for (let j = 0; j < sets.length; ++j) {
+          targets[i].push(this.$refs[`canvas-${i}-${j}`][0]);
+        }
+      }
+      return targets;
+    }, // createTargets()
+
+    createVisualisations,
+
+    formatInteger(int) {
+      return formatter(int);
+    },
+
+    log(id, data) {
+      this.logData[id].compares = data.compare.count;
+      this.logData[id].swaps = data.swap.count;
+    }, // log()
+  },
+  mounted() {
+    const targets = this.createTargets();
+    const log = (id, data) => {
+      this.log(id, data);
+    };
+    this.visualizations = new Visualizations({ render, log });
+    this.createVisualisations({ targets, algorithms, sets });
+    this.visualizations.renderAll(true);
+    this.visualizations.iterate();
+  }, // mounted()
+}
+</script>
