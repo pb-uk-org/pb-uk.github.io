@@ -5,8 +5,6 @@ const baseBlogPlugin = require('./site/plugins/eleventy-base-blog');
 const markdownPlugin = require('./site/plugins/markdown');
 const browserSyncPlugin = require('./site/plugins/browser-sync');
 
-const pbukPlugin = require('./site/plugins/pbuk');
-
 // Site configuration.
 const notFoundPage = 'docs/404.html';
 const passthrough = { 'site/assets': 'assets' };
@@ -48,7 +46,6 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(baseBlogPlugin);
   eleventyConfig.addPlugin(markdownPlugin);
   eleventyConfig.addPlugin(browserSyncPlugin, { notFoundPage });
-  eleventyConfig.addPlugin(pbukPlugin);
 
   // Static assets.
   eleventyConfig.addPassthroughCopy(passthrough);

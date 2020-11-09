@@ -2,17 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://pb-uk.github.io/blog/coming-soon%20copy/</loc>
+    <loc>https://pb-uk.github.io/posts/firstpost/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
-    <loc>https://pb-uk.github.io/blog/coming-soon/</loc>
+    <loc>https://pb-uk.github.io/about/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
   <url>
-    <loc>https://pb-uk.github.io/blog/</loc>
+    <loc>https://pb-uk.github.io/posts/</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   
@@ -32,72 +32,7 @@
   </url>
   
   <url>
-    <loc>https://pb-uk.github.io/tags/info/</loc>
+    <loc>https://pb-uk.github.io/tags/meta/</loc>
     <lastmod>2020-11-05</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/tags/code/</loc>
-    <lastmod>2020-11-05</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/tags/physics-forums/</loc>
-    <lastmod>2020-11-05</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/tags/pages/</loc>
-    <lastmod>2020-11-05</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/about/</loc>
-    <lastmod>2020-11-05</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/blog/sorting/</loc>
-    <lastmod>2020-11-06</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/algorithms/sorting/</loc>
-    <lastmod>2020-11-06</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/algorithms/initial-value-problems/</loc>
-    <lastmod>2020-11-06</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/algorithms/combinatorics/</loc>
-    <lastmod>2020-11-06</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/algorithms/number-theory/</loc>
-    <lastmod>2020-11-06</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/articles/</loc>
-    <lastmod>2020-11-07</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/algorithms/sorting/visualization/old/</loc>
-    <lastmod>2020-11-08</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/algorithms/sorting/visualization/_sorter-card/</loc>
-    <lastmod>2020-11-09</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pb-uk.github.io/algorithms/sorting/visualization/</loc>
-    <lastmod>2020-11-09</lastmod>
   </url>
 </urlset>
