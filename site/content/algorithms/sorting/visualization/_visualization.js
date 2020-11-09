@@ -69,9 +69,10 @@ class Chart {
 }
 
 class Visualizations {
-  constructor({ render }) {
+  constructor({ render, log }) {
     this.allDone = false;
     this.visualizations = [];
+    this.log = log;
     if (render) this.render = render;
   }
 
@@ -82,6 +83,7 @@ class Visualizations {
   renderAll(repaint) {
     this.visualizations.forEach(vis => {
       this.render(vis, vis.set, vis.isDone, repaint);
+      this.log(vis.id, vis);
     });
   }
 

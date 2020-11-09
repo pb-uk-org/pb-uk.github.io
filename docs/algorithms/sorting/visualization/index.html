@@ -75,16 +75,17 @@
 
 <script type="text/x-template" id="app-template">
 <div>
-{{ message }}
-<div>
-  {{ title }}
-  <div v-for="(algorithm, i) in algorithms">
-    <div v-for="(set, j) in sets">
-      algorithm: {{ i }} set {{ j }}
-      <div v-bind:ref="`canvas-${i}-${j}`"></div>
+  <div>
+    <div v-for="(algorithm, i) in algorithms" class="columns is-multiline">
+      <div class="column is-12">
+        <h3>{{ algorithm.name }}</h3>
+      </div>
+      <div v-for="(set, j) in sets" class="column">
+        <h4>{{ set.name }}</h4>
+        <div v-bind:ref="`canvas-${i}-${j}`"></div>
+      </div>
     </div>
   </div>
-</div>
 </div>
 </script>
 
@@ -162,9 +163,10 @@ class Chart {
 }
 
 class Visualizations {
-  constructor({ render }) {
+  constructor({ render, log }) {
     this.allDone = false;
     this.visualizations = [];
+    this.log = log;
     if (render) this.render = render;
   }
 
@@ -175,6 +177,7 @@ class Visualizations {
   renderAll(repaint) {
     this.visualizations.forEach(vis => {
       this.render(vis, vis.set, vis.isDone, repaint);
+      this.log(vis.id, vis);
     });
   }
 
@@ -278,8 +281,27 @@ let fn;
 
   fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
+  // Start comparing at the end for better performance when nearly sorted.
+  for (let i = n - 1; i > 0; --i) {
+    // Bubble towards the start.
+    for (let j = n - 1; j > n - i - 1; --j) {
+      if (compare(set, j - 1, j) > 0) {
+        yield set;
+        swap(set, j - 1, j);
+      } else {
+        yield set;
+      }
+    }
+    // The (n - i - 1)'th element is now correct.
+  }
+  return set;
+}
+
+/*
+function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = n - 1; i > 0; --i) {
+    for (let j = n - i + 1; j >= 0; --j) {
       if (compare(set, j, j + 1) > 0) {
         yield set;
         swap(set, j, j + 1);
@@ -290,15 +312,36 @@ let fn;
   }
   return set;
 }
+*/
 ;
   algorithms.push({
+    name: 'Improved bubble sort',
     fn,
   });
 
   fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
+  // Start comparing at the end for better performance when nearly sorted.
+  for (let i = n - 1; i > 0; --i) {
+    // Bubble towards the start.
+    for (let j = n - 1; j > n - i - 1; --j) {
+      if (compare(set, j - 1, j) > 0) {
+        yield set;
+        swap(set, j - 1, j);
+      } else {
+        yield set;
+      }
+    }
+    // The (n - i - 1)'th element is now correct.
+  }
+  return set;
+}
+
+/*
+function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = n - 1; i > 0; --i) {
+    for (let j = n - i + 1; j >= 0; --j) {
       if (compare(set, j, j + 1) > 0) {
         yield set;
         swap(set, j, j + 1);
@@ -309,15 +352,36 @@ let fn;
   }
   return set;
 }
+*/
 ;
   algorithms.push({
+    name: 'Improved bubble sort 2',
     fn,
   });
 
   fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
+  // Start comparing at the end for better performance when nearly sorted.
+  for (let i = n - 1; i > 0; --i) {
+    // Bubble towards the start.
+    for (let j = n - 1; j > n - i - 1; --j) {
+      if (compare(set, j - 1, j) > 0) {
+        yield set;
+        swap(set, j - 1, j);
+      } else {
+        yield set;
+      }
+    }
+    // The (n - i - 1)'th element is now correct.
+  }
+  return set;
+}
+
+/*
+function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = n - 1; i > 0; --i) {
+    for (let j = n - i + 1; j >= 0; --j) {
       if (compare(set, j, j + 1) > 0) {
         yield set;
         swap(set, j, j + 1);
@@ -328,34 +392,36 @@ let fn;
   }
   return set;
 }
+*/
 ;
   algorithms.push({
+    name: 'Improved bubble sort 3',
     fn,
   });
 
   fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
-      if (compare(set, j, j + 1) > 0) {
+  // Start comparing at the end for better performance when nearly sorted.
+  for (let i = n - 1; i > 0; --i) {
+    // Bubble towards the start.
+    for (let j = n - 1; j > n - i - 1; --j) {
+      if (compare(set, j - 1, j) > 0) {
         yield set;
-        swap(set, j, j + 1);
+        swap(set, j - 1, j);
       } else {
         yield set;
       }
     }
+    // The (n - i - 1)'th element is now correct.
   }
   return set;
 }
-;
-  algorithms.push({
-    fn,
-  });
 
-  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
+/*
+function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
+  for (let i = n - 1; i > 0; --i) {
+    for (let j = n - i + 1; j >= 0; --j) {
       if (compare(set, j, j + 1) > 0) {
         yield set;
         swap(set, j, j + 1);
@@ -366,65 +432,10 @@ let fn;
   }
   return set;
 }
+*/
 ;
   algorithms.push({
-    fn,
-  });
-
-  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
-  let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
-      if (compare(set, j, j + 1) > 0) {
-        yield set;
-        swap(set, j, j + 1);
-      } else {
-        yield set;
-      }
-    }
-  }
-  return set;
-}
-;
-  algorithms.push({
-    fn,
-  });
-
-  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
-  let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
-      if (compare(set, j, j + 1) > 0) {
-        yield set;
-        swap(set, j, j + 1);
-      } else {
-        yield set;
-      }
-    }
-  }
-  return set;
-}
-;
-  algorithms.push({
-    fn,
-  });
-
-  fn = function* improvedBubbleSortGenerator(set, { compare, swap }) {
-  let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
-      if (compare(set, j, j + 1) > 0) {
-        yield set;
-        swap(set, j, j + 1);
-      } else {
-        yield set;
-      }
-    }
-  }
-  return set;
-}
-;
-  algorithms.push({
+    name: 'Improved bubble sort 4',
     fn,
   });
 
@@ -432,24 +443,39 @@ let fn;
 const sets = []
 
   sets.push({
+    name: 'Random',
     generator: 'random',
   });
 
   sets.push({
+    name: 'Nearly sorted',
+    generator: 'nearlySorted',
+  });
+
+  sets.push({
+    name: 'Reversed',
+    generator: 'reversed',
+  });
+
+  sets.push({
+    name: 'Many equal',
     generator: 'random',
   });
 
 
-function render({ compare, swap, set, chart }, value, done, repaint) {
+function render({ compare, swap, set, chart, id }, value, done, repaint) {
   if (repaint) {
     chart.repaint(set);
     return;
   }
   const { last } = compare;
   chart.draw(last[0], set[last[0]], last[1], set[last[1]], last[2]);
+  this.log(id, { compare, swap});
 }
 
-const visualizations = new Visualizations({ render });
+const log = () => {};
+const visualizations = new Visualizations({ render, log });
+
 const fps = false;
 const max = 100;
 
@@ -458,6 +484,7 @@ function createVisualisations({ targets, algorithms, sets }) {
     const set = getSet[setDef.generator]();
     algorithms.forEach((algorithm, j) => {
       visualizations.add({
+        id: `${j}-${i}`,
         generatorFunction: algorithms[j].fn,
         set: set.slice(),
         chart: {
@@ -465,7 +492,7 @@ function createVisualisations({ targets, algorithms, sets }) {
           n: set.length,
           max,
           height: 100,
-          width: 200,
+          width: 300,
         },
       });
     });
@@ -476,14 +503,29 @@ function createVisualisations({ targets, algorithms, sets }) {
 }
 
 const getSet = {
+  sorted() {
+    const set = [];
+    for (let i = 1; i <= max; ++i) {
+      set.push(i);
+    }
+    return set;
+  },
   random() {
     const set = [];
     for (let i = 1; i <= max; ++i) {
       set.push(i);
     }
-    shuffle(set);
+    return shuffle(set);
+  },
+  nearlySorted() {
+    const set = this.sorted();
+    const first = set.shift();
+    set.push(first);
     return set;
-  }
+  },
+  reversed() {
+    return this.sorted().reverse();
+  },
 };
 
 function iterate() {
@@ -502,8 +544,11 @@ vueApp = {
   template: '#app-template',
   data() {
     return {
+      algorithms: algorithms,
       title: 'My title',
       message: 'loaded',
+      compares: {},
+      swaps: {},
     };
   },
   methods: {
@@ -516,11 +561,19 @@ vueApp = {
         }
       }
       return targets;
-    },
+    }, // createTargets()
+
+    log(id, data) {
+      this.compares[id] = data.compare.count;
+      this.swaps[id] = data.swap.count;
+    }, // log()
   },
   mounted() {
     const targets = this.createTargets();
-    createVisualisations({ targets, algorithms, sets });
+    const log = (id, data) => {
+      this.log(id, data);
+    };
+    createVisualisations({ targets, algorithms, sets, log });
   }, // mounted()
 }
 </script>

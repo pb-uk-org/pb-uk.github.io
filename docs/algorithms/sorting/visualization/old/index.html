@@ -202,9 +202,10 @@ class Chart {
 }
 
 class Visualizations {
-  constructor({ render }) {
+  constructor({ render, log }) {
     this.allDone = false;
     this.visualizations = [];
+    this.log = log;
     if (render) this.render = render;
   }
 
@@ -215,6 +216,7 @@ class Visualizations {
   renderAll(repaint) {
     this.visualizations.forEach(vis => {
       this.render(vis, vis.set, vis.isDone, repaint);
+      this.log(vis.id, vis);
     });
   }
 
@@ -316,8 +318,27 @@ function shuffle(array) {
 let fn =
 function* improvedBubbleSortGenerator(set, { compare, swap }) {
   let n = set.length;
-  for (let i = 0; i < n - 1; ++i) {
-    for (let j = 0; j < n - i - 1; ++j) {
+  // Start comparing at the end for better performance when nearly sorted.
+  for (let i = n - 1; i > 0; --i) {
+    // Bubble towards the start.
+    for (let j = n - 1; j > n - i - 1; --j) {
+      if (compare(set, j - 1, j) > 0) {
+        yield set;
+        swap(set, j - 1, j);
+      } else {
+        yield set;
+      }
+    }
+    // The (n - i - 1)'th element is now correct.
+  }
+  return set;
+}
+
+/*
+function* improvedBubbleSortGenerator(set, { compare, swap }) {
+  let n = set.length;
+  for (let i = n - 1; i > 0; --i) {
+    for (let j = n - i + 1; j >= 0; --j) {
       if (compare(set, j, j + 1) > 0) {
         yield set;
         swap(set, j, j + 1);
@@ -328,6 +349,7 @@ function* improvedBubbleSortGenerator(set, { compare, swap }) {
   }
   return set;
 }
+*/
 ;
 
 const visualizations = new Visualizations({ render });
@@ -373,7 +395,7 @@ iterate();
 
 </script>
 <p>s</p>
-<pre class="language-js"><code class="language-js"><span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">improvedBubbleSortGenerator</span><span class="token punctuation">(</span><span class="token parameter">set<span class="token punctuation">,</span> <span class="token punctuation">{</span> compare<span class="token punctuation">,</span> swap <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">let</span> n <span class="token operator">=</span> set<span class="token punctuation">.</span>length<span class="token punctuation">;</span><br>  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> n <span class="token operator">-</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">++</span>j<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compare</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j<span class="token punctuation">,</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>        <span class="token function">swap</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j<span class="token punctuation">,</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br>  <span class="token keyword">return</span> set<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br></code></pre>
+<pre class="language-js"><code class="language-js"><span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">improvedBubbleSortGenerator</span><span class="token punctuation">(</span><span class="token parameter">set<span class="token punctuation">,</span> <span class="token punctuation">{</span> compare<span class="token punctuation">,</span> swap <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">let</span> n <span class="token operator">=</span> set<span class="token punctuation">.</span>length<span class="token punctuation">;</span><br>  <span class="token comment">// Start comparing at the end for better performance when nearly sorted.</span><br>  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token operator">--</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token comment">// Bubble towards the start.</span><br>    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">></span> n <span class="token operator">-</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token operator">--</span>j<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">compare</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> j<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>        <span class="token function">swap</span><span class="token punctuation">(</span>set<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> j<span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>        <span class="token keyword">yield</span> set<span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br>    <span class="token comment">// The (n - i - 1)'th element is now correct.</span><br>  <span class="token punctuation">}</span><br>  <span class="token keyword">return</span> set<span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token comment">/*<br>function* improvedBubbleSortGenerator(set, { compare, swap }) {<br>  let n = set.length;<br>  for (let i = n - 1; i > 0; --i) {<br>    for (let j = n - i + 1; j >= 0; --j) {<br>      if (compare(set, j, j + 1) > 0) {<br>        yield set;<br>        swap(set, j, j + 1);<br>      } else {<br>        yield set;<br>      }<br>    }<br>  }<br>  return set;<br>}<br>*/</span><br></code></pre>
 
 </main>
 <hr>
